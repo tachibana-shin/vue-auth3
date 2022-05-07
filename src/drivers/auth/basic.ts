@@ -1,18 +1,19 @@
 import AuthDriver from "../../type/drivers/AuthDriver"
 
-const driver: AuthDriver = {
-    request (req, token) {
-        this.drivers.http.setHeaders.call(this, req, {
-            Authorization: token
-        });
-    },
-    
-    response (res) {
-        const headers = this.drivers.http.getHeaders.call(this, res),
-            token   = headers.Authorization || headers.authorization;
-        
-        return token;
-    }
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const driver: AuthDriver<any, any> = {
+  request(auth, req, token) {
+    auth.options.drivers.http?.setHeaders(auth, req, {
+      Authorization: token,
+    })
+  },
+
+  response(auth, res) {
+    const headers = auth.options.drivers.http?.getHeaders(auth, res),
+      token = headers.Authorization || headers.authorization
+
+    return token
+  },
 }
 
-export default driver;
+export default driver

@@ -1,74 +1,79 @@
-import CookieOptions from "../type/CookieOptions";
+import Auth from "../Auth"
 
 function setCookie(
+  auth: Auth,
   key: string,
   value: string,
-  expires: boolean,
-  auth: Auth
+  expires: boolean
 ): void {
-  const options = auth.options.cookie;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const options = auth.options.cookie as any
 
-  let cookie = `${key}=${value};`;
+  // eslint-disable-next-line functional/no-let
+  let cookie = `${key}=${value};`
 
   for (const prop in options) {
+    // eslint-disable-next-line functional/no-let
     let value =
-      typeof options[prop] === "function" ? options[prop]() : options[prop];
+      typeof options[prop] === "function" ? options[prop]() : options[prop]
 
     // Just skip if unset or false.
     if (value === false || value === void 0) {
-      continue;
+      continue
     }
 
     if (prop === "expires") {
-      value = expires ? "" : getDate(prop);
+      value = expires ? "" : getDate(prop)
     }
 
     if (value === true) {
-      cookie += `${prop}`;
-      continue;
+      cookie += `${prop}`
+      continue
     }
 
     // Default key/val.
 
-    cookie += `${prop}=${value};`;
+    cookie += `${prop}=${value};`
   }
 
-  document.cookie = cookie;
+  // eslint-disable-next-line functional/immutable-data
+  document.cookie = cookie
 }
 
 function getDate(val: string | number | Date): string {
   if (typeof val === "string") {
-    return val as string;
+    return val as string
   }
 
   return new Date(
     new Date().getTime() +
       (val instanceof Date ? val.getTime() : (val as number))
-  ).toUTCString();
+  ).toUTCString()
 }
 
-function get(key: string): string | null {
+function get(auth: Auth, key: string): string | null {
   return (
     document.cookie
       .replace(/;\s+/g, ";")
       .split(";")
       .map((s) => {
-        return s.replace(/\s+=\s+/g, "=").split("=");
+        return s.replace(/\s+=\s+/g, "=").split("=")
       })
       .find(([keyTest]) => {
-        return keyTest === key;
+        return keyTest === key
       })?.[1] ?? null
-  );
+  )
 }
 
-function remove(key: string, auth: Auth): void {
-  setCookie(key, "", false, auth);
+function remove(auth: Auth, key: string): void {
+  setCookie(auth, key, "", false)
 }
 
 const cookie = {
   get,
   set: setCookie,
   remove,
-};
+}
 
-export default cookie;
+export default cookie
+

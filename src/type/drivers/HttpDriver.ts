@@ -1,14 +1,19 @@
-import Options from "../Options"
+/* eslint-disable functional/prefer-readonly-type */
+import Auth from "../../Auth"
 
-type HttpDriver<IRequest =any , IResponse=any > = {
-	init: (this: Auth) => void;
-	interceptor: (this: Auth, req: IRequest, res: IResponse) => void
-	invalidToken?: (this: Auth, res: IRequest) => boolean;
-	httpData?: (this: Auth, obj: any) => any;
-	http?: (this: Auth, data: any) => any;
-	getHeaders?: (this: Auth, res: IResponse) => 
-Headers
-	setHeaders?: (this: Auth, req: IRequest, headers: Headers) => void
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type HttpDriver<IRequest = any, IResponse = any> = {
+  init: (auth: Auth) => void
+  interceptor: (auth: Auth, req: IRequest, res: IResponse) => void
+  invalidToken: (auth: Auth, res: IRequest) => boolean
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  httpData: (auth: Auth, obj: any) => any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  http: (auth: Auth, data: any) => any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  getHeaders: (auth: Auth, res: IResponse) => any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  setHeaders: (auth: Auth, req: IRequest, headers: any) => void
 }
 
 export default HttpDriver
