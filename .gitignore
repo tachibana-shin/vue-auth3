@@ -1,0 +1,9 @@
+node_modules/
+yarn-error.log
+
+node-types/
+/dist
+/docs
+/types
+/demo
+/coverage
