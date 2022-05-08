@@ -15,10 +15,13 @@ const banner = `/**
  * ${name} version ${version}
  * */`
 
+const external = ["vue", "axios", "vue-router", "pinia"];
+
 function build(input, name) {
   return [
     {
       input,
+      external,
       plugins: [
         esbuild({
           // All options are optional
@@ -79,6 +82,7 @@ function build(input, name) {
     },
     {
       input,
+      external,
       plugins: [
         esbuild({
           // All options are optional
