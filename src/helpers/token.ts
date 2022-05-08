@@ -18,40 +18,51 @@ function getTokenKey(key: string | null, auth: Auth): string {
   return auth.options.tokenDefaultKey
 }
 
-function get(auth: Auth, key: string | null) {
+function get<T>(auth: Auth, key: string | null): T | null {
+  const keyI = getTokenKey(key, auth)
+
   // eslint-disable-next-line functional/no-let
   for (let i = 0; i < auth.options.stores.length; i++) {
     const store = auth.options.stores[i]
-    const keyI = getTokenKey(key, auth)
+    // eslint-disable-next-line functional/no-let
+    let val
 
     if (typeof store === "object") {
-      return store.get(keyI)
+      val = store.get(keyI)
     }
     if (store === "storage" && isLocalStorage() && isSessionStorage()) {
-      return storage.get(keyI)
+      val = storage.get(keyI)
     }
     if (store === "cookie" && isCookieStorage()) {
-      return cookie.get(auth, keyI)
+      val = cookie.get(auth, keyI)
     }
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    if (val !== void 0) return val as any
   }
 
   return null
 }
 
-function set(auth: Auth, key: string | null, token: string, expires: boolean) {
+function set<T>(
+  auth: Auth,
+  key: string | null,
+  value: T,
+  expires: boolean
+): void {
+  const keyI = getTokenKey(key, auth)
   // eslint-disable-next-line functional/no-let
   for (let i = 0; i < auth.options.stores.length; i++) {
     const store = auth.options.stores[i]
-    const keyI = getTokenKey(key, auth)
 
     if (typeof store === "object") {
-      store.set(keyI, token, expires, auth)
+      store.set(keyI, value, expires, auth)
     }
     if (store === "storage" && isLocalStorage() && isSessionStorage()) {
-      storage.set(keyI, token, expires)
+      storage.set(keyI, value, expires)
     }
     if (store === "cookie" && isCookieStorage()) {
-      cookie.set(auth, keyI, token, expires)
+      cookie.set(auth, keyI, value, expires)
     }
   }
 }

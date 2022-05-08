@@ -21,8 +21,8 @@ type Options = {
     | "cookie"
     | "storage"
     | {
-        set: (key: string, value: string, expires: boolean, auth: Auth) => void
-        get: (key: string) => string | null
+        set: <T>(key: string, value: T, expires: boolean, auth: Auth) => void
+        get: <T>(key: string) => T
         remove: (key: string) => void
       }
   )[]

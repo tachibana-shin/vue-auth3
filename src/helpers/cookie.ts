@@ -1,24 +1,22 @@
 import Auth from "../Auth"
 
-function setCookie(
+function setCookie<T>(
   auth: Auth,
   key: string,
-  value: string,
+  value: T,
   expires: boolean
 ): void {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const options = auth.options.cookie as any
+  const options = auth.options.cookie
 
   // eslint-disable-next-line functional/no-let
-  let cookie = `${key}=${value};`
+  let cookie = `${key}=${JSON.stringify(value)};`
 
-  for (const prop in options) {
+  for (const [prop, val] of Object.entries(options)) {
     // eslint-disable-next-line functional/no-let
-    let value =
-      typeof options[prop] === "function" ? options[prop]() : options[prop]
+    let value = typeof val === "function" ? val() : val
 
     // Just skip if unset or false.
-    if (value === false || value === void 0) {
+    if (value === false || value == null) {
       continue
     }
 
@@ -27,7 +25,7 @@ function setCookie(
     }
 
     if (value === true) {
-      cookie += `${prop}`
+      cookie += `${prop};`
       continue
     }
 
@@ -52,7 +50,7 @@ function getDate(val: string | number | Date): string {
 }
 
 function get(auth: Auth, key: string): string | null {
-  return (
+  return JSON.parse(
     document.cookie
       .replace(/;\s+/g, ";")
       .split(";")
@@ -61,7 +59,8 @@ function get(auth: Auth, key: string): string | null {
       })
       .find(([keyTest]) => {
         return keyTest === key
-      })?.[1] ?? null
+        // eslint-disable-next-line quotes
+      })?.[1] ?? '"null"'
   )
 }
 

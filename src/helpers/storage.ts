@@ -1,14 +1,22 @@
-function set(key: string, value: string, expires: boolean): void {
+function set<T>(key: string, value: T, expires: boolean): void {
+  const $ = JSON.stringify(value)
+
   if (expires) {
-    sessionStorage.setItem(key, value)
+    sessionStorage.setItem(key, $)
     return
   }
 
-  localStorage.setItem(key, value)
+  localStorage.setItem(key, $)
 }
 
-function get(key: string): string | null {
-  return sessionStorage.getItem(key) || localStorage.getItem(key)
+function get<T>(key: string): T | null {
+  const $ = sessionStorage.getItem(key) || localStorage.getItem(key)
+
+  if ($ === null) {
+    return null
+  }
+
+  return JSON.parse($)
 }
 
 function remove(key: string): void {

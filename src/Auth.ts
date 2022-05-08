@@ -237,7 +237,7 @@ function setRemember(auth: Auth, val?: boolean) {
 
 function setStaySignedIn(auth: Auth, staySignedIn?: boolean) {
   if (staySignedIn === true) {
-    $token.set(auth, auth.options.staySignedInKey, "true", false)
+    $token.set(auth, auth.options.staySignedInKey, true, false)
   } else {
     $token.remove(auth, auth.options.staySignedInKey)
   }
@@ -245,7 +245,7 @@ function setStaySignedIn(auth: Auth, staySignedIn?: boolean) {
 
 function processImpersonate(
   auth: Auth,
-  defaultToken: null | string,
+  defaultToken: string | null,
   redirect?: RouteLocationRaw
 ) {
   if (auth.token()) {
@@ -260,7 +260,7 @@ function processImpersonate(
   $token.set(
     auth,
     auth.options.tokenDefaultKey,
-    defaultToken + "",
+    defaultToken,
     $token.get(auth, auth.options.staySignedInKey) ? false : true
   )
   // eslint-disable-next-line functional/immutable-data
@@ -365,7 +365,7 @@ export default class Auth {
         tokenName = this.options.tokenDefaultKey
       }
 
-      const token = $token.get(this, tokenName ?? null)
+      const token = $token.get<string | null>(this, tokenName ?? null)
 
       if (token) {
         const { data, headers } = this.options.drivers.auth.request(
@@ -469,17 +469,14 @@ export default class Auth {
         $token.remove(this, name)
       } else {
         expires =
-          expires === true || expires === false
-            ? expires
-            : $token.get(this, this.options.staySignedInKey)
-            ? false
-            : true
+          expires ??
+          ($token.get(this, this.options.staySignedInKey) ? false : true)
 
         $token.set(this, name, token, expires)
       }
     }
 
-    return $token.get(this, name)
+    return $token.get<string | null>(this, name)
   }
 
   async fetch(data?: Options["fetchData"]) {
