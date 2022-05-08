@@ -69,12 +69,12 @@ function processFetch(auth: Auth, data: any, redirect?: RouteLocationRaw) {
   processRedirect(auth, redirect)
 }
 
-function processAuthenticated(auth: Auth, cb: () => void) {
+async function processAuthenticated(auth: Auth, cb: () => void) {
   if (auth.state.authenticated === null && $token.get(auth, null)) {
     if (auth.options.fetchData.enabled) {
-      auth.fetch()
+      await auth.fetch()
 
-      return
+      return cb()
     }
 
     processFetch(auth, {})
@@ -488,7 +488,7 @@ export default class Auth {
       ...data,
     })
 
-    processFetch(this, response, data?.redirect)
+    processFetch(this, response.data, data?.redirect)
 
     return response
   }
