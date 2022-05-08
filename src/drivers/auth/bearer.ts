@@ -1,21 +1,23 @@
 import AuthDriver from "../../type/drivers/AuthDriver"
 
 const driver: AuthDriver = {
-  request(auth, req, token) {
-    auth.options.drivers.http?.setHeaders(auth, req, {
-      Authorization: "Bearer " + token,
-    })
+  request(auth, options, token) {
+    // eslint-disable-next-line functional/immutable-data
+    options.headers["Authorization"] = "Bearer " + token
+
+    return options
   },
 
-  response(auth, res) {
-    const headers = auth.options.drivers.http?.getHeaders(auth, res),
-      token = headers.Authorization || headers.authorization
+  response(auth, { headers }) {
+    const token = headers.Authorization || headers.authorization
 
     if (token) {
-      const itoken = token.split(/Bearer:?\s?/i)
+      const i = token.split(/Bearer:?\s?/i)
 
-      return itoken[itoken.length > 1 ? 1 : 0].trim()
+      return i[i.length > 1 ? 1 : 0].trim()
     }
+
+    return null
   },
 }
 

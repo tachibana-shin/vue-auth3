@@ -1,17 +1,13 @@
-/* eslint-disable functional/prefer-readonly-type */
-import type { AxiosInstance, Method } from "axios"
+import type { AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios"
 import type { RouteLocationRaw, Router } from "vue-router"
 
 import Auth from "../Auth"
 
 import CookieOptions from "./CookieOptions"
 import AuthDriver from "./drivers/AuthDriver"
-import HttpDriver from "./drivers/HttpDriver"
 import OAuth2Driver from "./drivers/OAuth2Driver"
 
-type HttpData = {
-  url?: string
-  method?: Method
+type HttpData = AxiosRequestConfig &{
   redirect?: RouteLocationRaw
 }
 type Options = {
@@ -78,13 +74,6 @@ type Options = {
     fetchUser?: true
   }
 
-  // External
-
-  getUrl?: () => string
-  getCookieDomain?: () => string
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  parseUserData?: <T = any>(obj: any) => T
-
   // Plugin
 
   plugins: {
@@ -96,7 +85,10 @@ type Options = {
 
   drivers: {
     auth: AuthDriver
-    http: HttpDriver
+    http: {
+      request: AxiosInstance;
+      invalidToken?: (auth: Auth, response: AxiosResponse) => boolean;
+    }
     oauth2?: OAuth2Driver
   }
 }

@@ -1,4 +1,3 @@
-/* eslint-disable functional/prefer-readonly-type */
 type OAuth2Driver = {
   url: string
 

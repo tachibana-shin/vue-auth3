@@ -65,6 +65,7 @@
     "functional/no-class": "off",
     "functional/no-this-expression": "off",
     "functional/no-return-void": "off",
-    "functional/no-loop-statement": "off"
+    "functional/no-loop-statement": "off",
+    "functional/prefer-readonly-type": "off"
   }
 }

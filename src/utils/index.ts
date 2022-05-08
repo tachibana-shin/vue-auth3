@@ -9,44 +9,10 @@ export function isObject(val: any): val is object {
   return false
 }
 
-// eslint-disable-next-line functional/prefer-readonly-type
 export function toArray<T = any>(val: T): T[] {
   return typeof val === "string" || typeof val === "number"
     ? [val]
     : (val as any)
-}
-
-// eslint-disable-next-line functional/prefer-readonly-type
-export function extend<M, N>(mainObj: M, appendObj: N[] = {} as any): M & N {
-  const data = {} as any
-
-  for (const key in mainObj) {
-    if (isObject(mainObj[key]) && mainObj[key] instanceof FormData) {
-      // eslint-disable-next-line functional/immutable-data
-      data[key] = extend(mainObj[key], [{}])
-    } else {
-      // eslint-disable-next-line functional/immutable-data
-      data[key] = mainObj[key]
-    }
-  }
-
-  // eslint-disable-next-line functional/no-let
-  for (let i = 0, ii = appendObj.length; i < ii; i++) {
-    for (const key in appendObj[i]) {
-      if (
-        isObject(appendObj[i][key]) &&
-        appendObj[i][key] instanceof FormData
-      ) {
-        // eslint-disable-next-line functional/immutable-data
-        data[key] = extend((mainObj as any)[key] || {}, [appendObj[i][key]])
-      } else {
-        // eslint-disable-next-line functional/immutable-data
-        data[key] = appendObj[i][key]
-      }
-    }
-  }
-
-  return data
 }
 
 export function compare<O, T>(one: O, two: T): boolean {

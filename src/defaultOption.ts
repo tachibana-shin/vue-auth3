@@ -75,23 +75,6 @@ const __defaultOption: Partial<Options> = {
     redirect: "/",
     fetchUser: true,
   },
-
-  // External
-
-  getUrl() {
-    const port = window.location.port
-
-    return `${window.location.protocol}//${window.location.hostname}${
-      port ? `:${port}` : ""
-    }`
-  },
-  getCookieDomain() {
-    return window.location.hostname
-  },
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  parseUserData(response: any) {
-    return response.data || {}
-  },
 }
 
 export default __defaultOption

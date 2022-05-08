@@ -1,11 +1,16 @@
-/* eslint-disable functional/prefer-readonly-type */
+import { AxiosRequestConfig, AxiosRequestHeaders, AxiosResponse } from "axios"
+
 import Auth from "../../Auth"
 
-type AuthDriver<IRequest = Request, IResponse = Response> = {
+type OptionRequest = {
+  data?: AxiosRequestConfig["data"]
+  headers: AxiosRequestHeaders
+}
+
+type AuthDriver = {
   tokens?: string[]
-  request: (auth: Auth, req: IRequest, token: string) => void
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  response: (auth: Auth, res: IResponse) => any
+  request: (auth: Auth, options: OptionRequest, token: string) => OptionRequest
+  response: (auth: Auth, response: AxiosResponse) => string | null
 }
 
 export default AuthDriver

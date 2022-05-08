@@ -1,3 +1,4 @@
+import { AxiosRequestConfig, AxiosResponse } from "axios"
 import { App, reactive, shallowRef } from "vue"
 import {
   RouteLocationNormalized,
@@ -12,17 +13,11 @@ import getAuthMeta from "./helpme/getAuthMeta"
 import { authKey } from "./injectionKey"
 import Options from "./type/Options"
 import Roles from "./type/Roles"
-import { compare, extend, getProperty, toArray } from "./utils"
+import { compare, getProperty, toArray } from "./utils"
+import extend from "./utils/extend"
 
-function processInvalidToken(
-  auth: Auth,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  res: any
-) {
-  if (
-    !auth.options.drivers.http?.invalidToken ||
-    !auth.options.drivers.http?.invalidToken(auth, res)
-  ) {
+function processInvalidToken(auth: Auth, res: AxiosResponse): void {
+  if (!auth.options.drivers.http.invalidToken?.(auth, res)) {
     return
   }
 
@@ -77,18 +72,20 @@ function processFetch(auth: Auth, data: any, redirect?: RouteLocationRaw) {
 function processAuthenticated(auth: Auth, cb: () => void) {
   if (auth.state.authenticated === null && $token.get(auth, null)) {
     if (auth.options.fetchData.enabled) {
-      auth.fetch().then(cb, cb)
-    } else {
-      processFetch(auth, {})
+      auth.fetch()
 
-      return cb()
+      return
     }
-  } else {
-    // eslint-disable-next-line functional/immutable-data
-    auth.state.loaded = true
+
+    processFetch(auth, {})
 
     return cb()
   }
+
+  // eslint-disable-next-line functional/immutable-data
+  auth.state.loaded = true
+
+  return cb()
 }
 
 function processRouterBeforeEach(auth: Auth, cb: () => void) {
@@ -104,12 +101,8 @@ function processRouterBeforeEach(auth: Auth, cb: () => void) {
     auth.options.refreshData.enabled
   ) {
     auth.refresh().then(
-      () => {
-        processAuthenticated(auth, cb)
-      },
-      () => {
-        processAuthenticated(auth, cb)
-      }
+      () => processAuthenticated(auth, cb),
+      () => processAuthenticated(auth, cb)
     )
 
     return
@@ -154,7 +147,6 @@ function processTransitionEach(
         (authMeta as any).roles
       : // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (authMeta as any)
-    // eslint-disable-next-line functional/prefer-readonly-type
   ) as string[] | boolean | undefined
 
   if (
@@ -243,7 +235,7 @@ function setRemember(auth: Auth, val?: boolean) {
   }
 }
 
-function _setStaySignedIn(auth: Auth, staySignedIn?: boolean) {
+function setStaySignedIn(auth: Auth, staySignedIn?: boolean) {
   if (staySignedIn === true) {
     $token.set(auth, auth.options.staySignedInKey, "true", false)
   } else {
@@ -285,13 +277,15 @@ function processUnimpersonate(auth: Auth, redirect?: undefined) {
   processRedirect(auth, redirect)
 }
 
-function _parseRedirectUri(uri = ""): string {
+function parseRedirectUri(uri = ""): string {
   if (/^https?:\/\//.test(uri)) {
     return uri
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  return `${__defaultOption.getUrl!()}/${uri.replace(/^\/|\/$/g, "")}`
+  const url = `${location.protocol}//${window.location.hostname}${
+    location.port ? `:${location.port}` : ""
+  }`
+  return `${url}/${uri.replace(/^\/|\/$/g, "")}`
 }
 
 export default class Auth {
@@ -302,24 +296,16 @@ export default class Auth {
     impersonating: <boolean | void>undefined,
     remember: <boolean | null>null,
   })
-  // eslint-disable-next-line functional/prefer-readonly-type
   public _redirect = shallowRef<{
-    // eslint-disable-next-line functional/prefer-readonly-type
     type: number | null
-    // eslint-disable-next-line functional/prefer-readonly-type
     from: RouteLocationNormalized | null
-    // eslint-disable-next-line functional/prefer-readonly-type
     to: RouteLocationNormalized | null
   } | null>(null)
 
   public readonly options: Required<Options>
-  // eslint-disable-next-line functional/prefer-readonly-type
   public currentToken: string | null = null
-  // eslint-disable-next-line functional/prefer-readonly-type
   public tPrev: RouteLocationNormalized | null = null
-  // eslint-disable-next-line functional/prefer-readonly-type
   public tCurrent: RouteLocationNormalized | null = null
-  // eslint-disable-next-line functional/prefer-readonly-type
   public tStatusType: number | null = null
 
   install(app: App, key: symbol | string = authKey) {
@@ -331,7 +317,7 @@ export default class Auth {
 
   constructor(options: Options) {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    this.options = extend(__defaultOption, [options]) as any
+    this.options = extend(__defaultOption, 2, options) as any
 
     // _initRefreshInterval()
     if (
@@ -347,50 +333,6 @@ export default class Auth {
       }, this.options.refreshData.interval! * 1000 * 60) // In minutes.
     }
 
-    // _initInterceptors()
-    this.options.drivers.http?.interceptor(
-      this,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (req: any) => {
-        // eslint-disable-next-line functional/no-let
-        let tokenName
-
-        if (req && req.ignoreVueAuth) {
-          return req
-        }
-
-        if (req.impersonating === false && this.impersonating()) {
-          tokenName = this.options.tokenDefaultKey
-        }
-
-        const token = $token.get(this, tokenName ?? null)
-
-        if (token) {
-          this.options.drivers.auth.request(this, req, token)
-        }
-
-        return req
-      },
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (res: any, req: any) => {
-        if (req && req.ignoreVueAuth) {
-          return
-        }
-
-        processInvalidToken(this, res)
-
-        const token = this.options.drivers.auth.response(this, res)
-
-        if (token) {
-          $token.set(
-            this,
-            null,
-            token,
-            $token.get(this, this.options.staySignedInKey) ? false : true
-          )
-        }
-      }
-    )
     this.options.plugins.router?.beforeEach((to, from, next) => {
       this.tPrev = this.tCurrent
       this.tCurrent = from
@@ -407,6 +349,61 @@ export default class Auth {
         })
       })
     })
+  }
+
+  async http(
+    options: AxiosRequestConfig & {
+      ignoreVueAuth?: boolean
+      impersonating?: boolean
+    }
+  ) {
+    if (!options.ignoreVueAuth) {
+      // eslint-disable-next-line functional/no-let
+      let tokenName
+
+      if (options.impersonating === false && this.impersonating()) {
+        tokenName = this.options.tokenDefaultKey
+      }
+
+      const token = $token.get(this, tokenName ?? null)
+
+      if (token) {
+        const { data, headers } = this.options.drivers.auth.request(
+          this,
+          {
+            data: options.data,
+            headers: options.headers || {},
+          },
+          token
+        )
+
+        // eslint-disable-next-line functional/immutable-data
+        options.data = data
+        // eslint-disable-next-line functional/immutable-data
+        options.headers = headers
+      }
+    }
+
+    const response = await this.options.drivers.http.request(options)
+
+    if (options.ignoreVueAuth) {
+      return response
+    }
+
+    processInvalidToken(this, response)
+
+    const token = this.options.drivers.auth.response(this, response)
+
+    if (token) {
+      $token.set(
+        this,
+        null,
+        token,
+        $token.get(this, this.options.staySignedInKey) ? false : true
+      )
+    }
+
+    return response
   }
 
   ready() {
@@ -486,93 +483,67 @@ export default class Auth {
   }
 
   async fetch(data?: Options["fetchData"]) {
-    data = extend(this.options.fetchData, [data])
+    const response = await this.http({
+      ...this.options.fetchData,
+      ...data,
+    })
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return await this.options.drivers.http.http(this, data).then((res: any) => {
-      processFetch(
-        this,
-        this.options.parseUserData(
-          this.options.drivers.http.httpData(this, res)
-        ),
-        data?.redirect
-      )
+    processFetch(this, response, data?.redirect)
 
-      return res
+    return response
+  }
+
+  refresh(data?: Required<Options>["refreshData"]) {
+    return this.http({
+      ...this.options.refreshData,
+      ...(data || {}),
     })
   }
 
-  refresh(data: Partial<Options["refreshData"]> = {}) {
-    data = extend(this.options.refreshData, [data])
-
-    return this.options.drivers.http.http(this, data)
-  }
-
-  register(data: Required<Options>["registerData"]) {
-    const registerData = extend(this.options.registerData, [data])
+  async register(data: Required<Options>["registerData"]) {
+    const registerData = {
+      ...this.options.registerData,
+      ...data,
+    }
 
     if (registerData.autoLogin !== true) {
       setRemember(this, registerData.remember)
-      _setStaySignedIn(this, registerData.staySignedIn)
+      setStaySignedIn(this, registerData.staySignedIn)
     }
 
-    return new Promise((resolve, reject) => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      this.options.drivers.http.http(this, registerData).then((res: any) => {
-        if (registerData.autoLogin) {
-          const loginData = extend(this.options.loginData, [
-            data,
-          ]) as Required<Options>["loginData"]
+    const response = await this.http(registerData)
 
-          this.login(loginData).then(resolve, reject)
-        } else {
-          resolve(res)
+    if (registerData.autoLogin) {
+      await this.login(data)
 
-          processRedirect(this, registerData.redirect)
-        }
-      }, reject)
-    })
+      return response
+    }
+
+    processRedirect(this, registerData.redirect)
+
+    return response
   }
 
-  login(data: Required<Options>["loginData"]) {
-    data = extend(this.options.loginData, [data])
+  async login(data: Required<Options>["loginData"]) {
+    const loginData = {
+      ...this.options.loginData,
+      ...data,
+    }
 
     setRemember(this, data.remember)
-    _setStaySignedIn(this, data.staySignedIn)
+    setStaySignedIn(this, data.staySignedIn)
 
-    return new Promise((resolve, reject) => {
-      this.options.drivers.http.http(this, data).then(
-        (res: unknown) => {
-          if (
-            data.fetchUser ||
-            (data.fetchUser === undefined && this.options.fetchData.enabled)
-          ) {
-            this.fetch({
-              redirect: data.redirect,
-            }).then(resolve, reject)
-          } else {
-            processFetch(
-              this,
-              this.options.parseUserData(
-                this.options.drivers.http.httpData(this, res)
-              ),
-              data.redirect
-            )
+    const response = await this.http(loginData)
 
-            resolve(res)
-          }
-        },
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (res: any) => {
-          // eslint-disable-next-line functional/immutable-data
-          this.state.loaded = true
-          // eslint-disable-next-line functional/immutable-data
-          this.state.authenticated = false
+    if (data.fetchUser || this.options.fetchData.enabled) {
+      await this.fetch({
+        redirect: data.redirect,
+      })
+    } else {
+      processFetch(this, response.data, data.redirect)
+    }
 
-          reject(res)
-        }
-      )
-    })
+    return response
   }
 
   remember(val: boolean) {
@@ -594,102 +565,81 @@ export default class Auth {
     setRemember(this, void 0)
   }
 
-  logout(data: Required<Options>["logoutData"]) {
-    data = extend(this.options.logoutData, [data])
+  async logout(data: Required<Options>["logoutData"]) {
+    const logoutData = {
+      ...this.options.logoutData,
+      ...data,
+    }
 
-    return new Promise<void>((resolve, reject) => {
-      if (data.makeRequest) {
-        this.options.drivers.http.http(this, data).then(() => {
-          processLogout(this, data.redirect)
+    if (data.makeRequest) {
+      await this.http(logoutData)
+    }
 
-          resolve()
-        }, reject)
-      } else {
-        processLogout(this, data.redirect)
-
-        resolve()
-      }
-    })
+    processLogout(this, data.redirect)
   }
 
-  impersonate(data: Required<Options>["impersonateData"]) {
-    data = extend(this.options.impersonateData, [data])
+  async impersonate(data: Required<Options>["impersonateData"]) {
+    const impersonateData = {
+      ...this.options.impersonateData,
+      ...data,
+    }
+    const token = this.token()
 
-    return new Promise((resolve, reject) => {
-      const token = this.token()
+    await this.http(impersonateData)
 
-      this.options.drivers.http.http(this, data).then((res: unknown) => {
-        processImpersonate(this, token)
+    processImpersonate(this, token)
 
-        if (
-          data.fetchUser ||
-          (data.fetchUser === undefined && this.options.fetchData.enabled)
-        ) {
-          this.fetch({
-            redirect: data.redirect,
-          }).then(resolve, reject)
-        } else {
-          processRedirect(this, data.redirect)
+    if (data.fetchUser || this.options.fetchData.enabled) {
+      await this.fetch({
+        redirect: data.redirect,
+      })
 
-          resolve(res)
-        }
-      }, reject)
-    })
+      return
+    }
+
+    processRedirect(this, data.redirect)
   }
 
-  unimpersonate(data: Required<Options>["unimpersonateData"]) {
-    data = extend(this.options.unimpersonateData, [data])
+  async unimpersonate(data: Required<Options>["unimpersonateData"]) {
+    const unimpersonateData = {
+      ...this.options.unimpersonateData,
+      ...data,
+    }
 
-    return new Promise<void>((resolve, reject) => {
-      if (data.makeRequest) {
-        this.options.drivers.http.http(this, data).then(resolve, reject)
-      } else {
-        resolve()
-      }
-    }).then(
-      () =>
-        new Promise<void>((resolve, reject) => {
-          processUnimpersonate(this)
+    if (data.makeRequest) {
+      await this.http(unimpersonateData)
+    }
 
-          if (
-            data.fetchUser ||
-            (data.fetchUser === undefined && this.options.fetchData.enabled)
-          ) {
-            this.fetch({
-              redirect: data.redirect,
-            }).then(resolve, reject)
-          } else {
-            processRedirect(this, data.redirect)
+    processUnimpersonate(this)
 
-            resolve()
-          }
-        })
-    )
+    if (data.fetchUser || this.options.fetchData.enabled) {
+      await this.fetch({
+        redirect: data.redirect,
+      })
+
+      return
+    }
   }
 
   oauth2(
     type: string | number,
     data: {
-      // eslint-disable-next-line functional/prefer-readonly-type, @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       code: any
-      // eslint-disable-next-line functional/prefer-readonly-type
       state: string
-      // eslint-disable-next-line functional/prefer-readonly-type
       params: {
-        // eslint-disable-next-line functional/prefer-readonly-type
         [x: string]: string | number | boolean
-        // eslint-disable-next-line functional/prefer-readonly-type, @typescript-eslint/no-explicit-any
+        // eslint-disable-next-line  @typescript-eslint/no-explicit-any
         state?: any
-        // eslint-disable-next-line functional/prefer-readonly-type, @typescript-eslint/no-explicit-any
+        // eslint-disable-next-line  @typescript-eslint/no-explicit-any
         redirect_uri?: any
       }
-      // eslint-disable-next-line functional/prefer-readonly-type, @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line  @typescript-eslint/no-explicit-any
       url: any
-      // eslint-disable-next-line functional/prefer-readonly-type, @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line  @typescript-eslint/no-explicit-any
       window: any
     }
   ) {
-    // eslint-disable-next-line functional/prefer-readonly-type
     const params: string[] = []
 
     if (data.code) {
@@ -705,18 +655,18 @@ export default class Auth {
       }
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      data = extend(this.options.oauth2Data, [data.state, data]) as any
+      data = extend(this.options.oauth2Data, 2, data.state, data) as any
 
       return this.login(data)
     }
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-non-null-assertion
-    data = extend((this.options.drivers.oauth2 as any)![type] as any, [data])
+    data = extend((this.options.drivers.oauth2 as any)![type] as any, 2, data)
 
     // eslint-disable-next-line functional/immutable-data
     data.params.state = JSON.stringify(data.params.state || {})
     // eslint-disable-next-line functional/immutable-data
-    data.params.redirect_uri = _parseRedirectUri(data.params.redirect_uri)
+    data.params.redirect_uri = parseRedirectUri(data.params.redirect_uri)
 
     Object.keys(data.params).forEach((key) => {
       // eslint-disable-next-line functional/immutable-data

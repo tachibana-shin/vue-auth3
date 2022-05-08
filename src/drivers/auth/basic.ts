@@ -1,18 +1,15 @@
 import AuthDriver from "../../type/drivers/AuthDriver"
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const driver: AuthDriver<any, any> = {
-  request(auth, req, token) {
-    auth.options.drivers.http?.setHeaders(auth, req, {
-      Authorization: token,
-    })
+const driver: AuthDriver = {
+  request(auth, options, token) {
+    // eslint-disable-next-line functional/immutable-data
+    options.headers["Authorization"] = token
+
+    return options
   },
 
-  response(auth, res) {
-    const headers = auth.options.drivers.http?.getHeaders(auth, res),
-      token = headers.Authorization || headers.authorization
-
-    return token
+  response(auth, { headers }) {
+    return headers.Authorization || headers.authorization
   },
 }
 

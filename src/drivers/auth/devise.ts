@@ -14,7 +14,7 @@ const driver: AuthDriver = {
     "expiry",
   ],
 
-  request(auth, req, token) {
+  request(auth, options, token) {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const headers = {} as any,
       tokens = token.split("|")
@@ -26,13 +26,15 @@ const driver: AuthDriver = {
       }
     })
 
-    auth.options.drivers.http?.setHeaders(auth, req, headers)
+    // eslint-disable-next-line functional/immutable-data
+    Object.assign(options.headers, headers)
+
+    return options
   },
 
-  response(auth, res) {
-    // eslint-disable-next-line functional/prefer-readonly-type, @typescript-eslint/no-explicit-any
-    const token: any[] = [],
-      headers = auth.options.drivers.http?.getHeaders(auth, res)
+  response(auth, { headers }) {
+    // eslint-disable-next-line  @typescript-eslint/no-explicit-any
+    const token: any[] = []
 
     if (headers["access-token"] || headers["Access-Token"]) {
       auth.options.drivers.auth.tokens?.forEach((tokenName) => {
@@ -51,6 +53,8 @@ const driver: AuthDriver = {
         return token.join("|")
       }
     }
+
+    return null
   },
 }
 
