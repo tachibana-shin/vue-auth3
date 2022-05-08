@@ -27,7 +27,7 @@ const driver: HttpDriver<any, any> = {
     if (res) {
       auth.options.plugins.http.interceptors.response.use(
         (response) => {
-          res(auth, response)
+          res(response, response.request)
 
           return response
         },
