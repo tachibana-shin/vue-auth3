@@ -45,13 +45,13 @@ function set(auth: Auth, key: string | null, token: string, expires: boolean) {
     const keyI = getTokenKey(key, auth)
 
     if (typeof store === "object") {
-      return store.set(keyI, token, expires, auth)
+      store.set(keyI, token, expires, auth)
     }
     if (store === "storage" && isLocalStorage() && isSessionStorage()) {
-      return storage.set(keyI, token, expires)
+      storage.set(keyI, token, expires)
     }
     if (store === "cookie" && isCookieStorage()) {
-      return cookie.set(auth, keyI, token, expires)
+      cookie.set(auth, keyI, token, expires)
     }
   }
 }
@@ -63,13 +63,13 @@ function remove(auth: Auth, key: string | null) {
     const keyI = getTokenKey(key, auth)
 
     if (typeof store === "object") {
-      return store.remove(keyI)
+      store.remove(keyI)
     }
     if (store === "storage" && isLocalStorage() && isSessionStorage()) {
-      return storage.remove(keyI)
+      storage.remove(keyI)
     }
     if (store === "cookie" && isCookieStorage()) {
-      return cookie.remove(auth, keyI)
+      cookie.remove(auth, keyI)
     }
   }
 }
