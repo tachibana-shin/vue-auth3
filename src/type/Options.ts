@@ -76,9 +76,8 @@ type Options = {
 
   // Plugin
 
-  plugins: {
-    router: Router
-    http: AxiosInstance
+  plugins?: {
+    router?: Router
   }
 
   // Driver
