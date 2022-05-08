@@ -2,11 +2,11 @@
   "name": "vue-auth3",
   "version": "0.0.1",
   "author": "Tachibana Shin <45375496+tachibana-shin@users.noreply.github.com>",
-  "main": "dist/index.esm.js",
+  "main": "dist/index.cjs",
   "exports": {
     ".": {
       "import": "./dist/index.esm.js",
-      "require": "./dist/index.umd.js",
+      "require": "./dist/index.cjs",
       "types": "./dist/index.d.ts"
     },
     "./": "./"

@@ -10,8 +10,8 @@ export function createAuth(options: Options) {
   return new Auth(options)
 }
 
-export function useAuth(key = "auth") {
-  return inject(key)
+export function useAuth(key = "auth"): Auth {
+  return inject(key) as Auth
 }
 
 export type { Options, Auth, AuthDriver, HttpDriver, OAuth2Driver }

@@ -15,7 +15,7 @@ const banner = `/**
  * ${name} version ${version}
  * */`
 
-const external = ["vue", "axios", "vue-router", "pinia"];
+const external = ["vue", "axios", "vue-router", "pinia"]
 
 function build(input, name) {
   return [
@@ -57,6 +57,9 @@ function build(input, name) {
           name: `${name}`,
           banner,
           strict: true,
+          globals: {
+            vue: "Vue",
+          },
         },
         // {
         //   file: `dist/${name}.umd.min.js`,
@@ -67,6 +70,14 @@ function build(input, name) {
         {
           file: `dist/${name}.esm.js`,
           format: "esm",
+          plugins: [],
+          exports: "auto",
+          banner,
+          strict: true,
+        },
+        {
+          file: `dist/${name}.cjs`,
+          format: "cjs",
           plugins: [],
           exports: "auto",
           banner,
@@ -118,6 +129,9 @@ function build(input, name) {
           name: `${name}`,
           banner,
           strict: true,
+          globals: {
+            vue: "Vue",
+          },
         },
         {
           file: `dist/${name}.esm.min.js`,
