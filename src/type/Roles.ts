@@ -6,4 +6,3 @@ type Roles =
   | Record<string, (string | string[] | Record<string, unknown>)[]>
 
 export default Roles
-

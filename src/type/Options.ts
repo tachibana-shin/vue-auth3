@@ -1,9 +1,6 @@
 /* eslint-disable functional/prefer-readonly-type */
 import type { AxiosInstance, Method } from "axios"
-import type {
-  RouteLocationRaw,
-  Router,
-} from "vue-router"
+import type { RouteLocationRaw, Router } from "vue-router"
 
 import Auth from "../Auth"
 
@@ -105,4 +102,3 @@ type Options = {
 }
 
 export default Options
-

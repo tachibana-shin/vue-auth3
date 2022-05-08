@@ -14,4 +14,3 @@ export default function getAuthMeta({ matched }: RouteLocationNormalized) {
 
   return auth ?? null
 }
-

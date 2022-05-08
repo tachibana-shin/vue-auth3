@@ -95,4 +95,3 @@ const __defaultOption: Partial<Options> = {
 }
 
 export default __defaultOption
-

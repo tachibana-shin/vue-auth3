@@ -8,4 +8,3 @@ declare module "@vue/runtime-core" {
     $auth: Auth
   }
 }
-

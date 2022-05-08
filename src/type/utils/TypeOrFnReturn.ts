@@ -1,3 +1,3 @@
-type TypeOrFnReturn<T, E = any> = T | ((this: E) => T);
+type TypeOrFnReturn<T, E = any> = T | ((this: E) => T)
 
-export default TypeOrFnReturn;
+export default TypeOrFnReturn

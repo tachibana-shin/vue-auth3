@@ -38,7 +38,7 @@ function get(auth: Auth, key: string | null) {
   return null
 }
 
-function set(auth: Auth, key: string | null, token: string , expires: boolean) {
+function set(auth: Auth, key: string | null, token: string, expires: boolean) {
   // eslint-disable-next-line functional/no-let
   for (let i = 0; i < auth.options.stores.length; i++) {
     const store = auth.options.stores[i]
@@ -81,4 +81,3 @@ const token = {
 }
 
 export default token
-

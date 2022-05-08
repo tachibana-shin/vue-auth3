@@ -9,6 +9,7 @@ import __defaultOption from "./defaultOption"
 import $cookie from "./helpers/cookie"
 import $token from "./helpers/token"
 import getAuthMeta from "./helpme/getAuthMeta"
+import { authKey } from "./injectionKey"
 import Options from "./type/Options"
 import Roles from "./type/Roles"
 import { compare, extend, getProperty, toArray } from "./utils"
@@ -143,16 +144,16 @@ function processTransitionEach(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (authMeta as any)?.redirect ||
     auth.options.notFoundRedirect
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const rolesKey = (authMeta as any)?.rolesKey || auth.options.rolesKey
 
   const roles = toArray(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (authMeta as any)?.roles !== undefined
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      ? (authMeta as any).roles
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      : (authMeta as any)
+      ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (authMeta as any).roles
+      : // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (authMeta as any)
     // eslint-disable-next-line functional/prefer-readonly-type
   ) as string[] | boolean | undefined
 
@@ -321,11 +322,11 @@ export default class Auth {
   // eslint-disable-next-line functional/prefer-readonly-type
   public tStatusType: number | null = null
 
-  install (app: App, key = "auth") {
-    app.provide(key, this);
+  install(app: App, key: symbol | string = authKey) {
+    app.provide(key, this)
 
     // eslint-disable-next-line functional/immutable-data
-    app.config.globalProperties.$auth = this;
+    app.config.globalProperties.$auth = this
   }
 
   constructor(options: Options) {
@@ -342,12 +343,11 @@ export default class Auth {
         if (this.options.refreshData.enabled && !!$token.get(this, null)) {
           this.refresh()
         }
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       }, this.options.refreshData.interval! * 1000 * 60) // In minutes.
     }
 
     // _initInterceptors()
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     this.options.drivers.http?.interceptor(
       this,
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -415,7 +415,6 @@ export default class Auth {
 
   load() {
     return new Promise<void>((resolve) => {
-      // eslint-disable-next-line functional/no-let
       const timer: NodeJS.Timer | null = setInterval(() => {
         if (this.state.loaded) {
           clearInterval(timer as unknown as number)
@@ -518,7 +517,7 @@ export default class Auth {
     }
 
     return new Promise((resolve, reject) => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       this.options.drivers.http.http(this, registerData).then((res: any) => {
         if (registerData.autoLogin) {
           const loginData = extend(this.options.loginData, [
@@ -684,9 +683,9 @@ export default class Auth {
         // eslint-disable-next-line functional/prefer-readonly-type, @typescript-eslint/no-explicit-any
         redirect_uri?: any
       }
-        // eslint-disable-next-line functional/prefer-readonly-type, @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line functional/prefer-readonly-type, @typescript-eslint/no-explicit-any
       url: any
-        // eslint-disable-next-line functional/prefer-readonly-type, @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line functional/prefer-readonly-type, @typescript-eslint/no-explicit-any
       window: any
     }
   ) {
@@ -743,4 +742,3 @@ export default class Auth {
     }
   }
 }
-
