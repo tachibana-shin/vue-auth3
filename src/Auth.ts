@@ -225,7 +225,7 @@ function processTransitionEach(
 
 function setRemember(auth: Auth, val?: boolean) {
   if (val) {
-    $token.set(auth, auth.options.rememberKey, val + "", false)
+    $token.set(auth, auth.options.rememberKey, val, false)
     // eslint-disable-next-line functional/immutable-data
     auth.state.remember = val
   } else {
@@ -527,17 +527,17 @@ export default class Auth {
       ...data,
     }
 
-    setRemember(this, data.remember)
-    setStaySignedIn(this, data.staySignedIn)
+    setRemember(this, loginData.remember)
+    setStaySignedIn(this, loginData.staySignedIn)
 
     const response = await this.http(loginData)
 
-    if (data.fetchUser || this.options.fetchData.enabled) {
+    if (loginData.fetchUser || this.options.fetchData.enabled) {
       await this.fetch({
-        redirect: data.redirect,
+        redirect: loginData.redirect,
       })
     } else {
-      processFetch(this, response.data, data.redirect)
+      processFetch(this, response.data, loginData.redirect)
     }
 
     return response
@@ -568,11 +568,11 @@ export default class Auth {
       ...data,
     }
 
-    if (data.makeRequest) {
+    if (logoutData.makeRequest) {
       await this.http(logoutData)
     }
 
-    processLogout(this, data.redirect)
+    processLogout(this, logoutData.redirect)
   }
 
   async impersonate(data: Required<Options>["impersonateData"]) {
@@ -586,15 +586,15 @@ export default class Auth {
 
     processImpersonate(this, token)
 
-    if (data.fetchUser || this.options.fetchData.enabled) {
+    if (impersonateData.fetchUser || this.options.fetchData.enabled) {
       await this.fetch({
-        redirect: data.redirect,
+        redirect: impersonateData.redirect,
       })
 
       return
     }
 
-    processRedirect(this, data.redirect)
+    processRedirect(this, impersonateData.redirect)
   }
 
   async unimpersonate(data: Required<Options>["unimpersonateData"]) {
@@ -603,15 +603,15 @@ export default class Auth {
       ...data,
     }
 
-    if (data.makeRequest) {
+    if (unimpersonateData.makeRequest) {
       await this.http(unimpersonateData)
     }
 
     processUnimpersonate(this)
 
-    if (data.fetchUser || this.options.fetchData.enabled) {
+    if (unimpersonateData.fetchUser || this.options.fetchData.enabled) {
       await this.fetch({
-        redirect: data.redirect,
+        redirect: unimpersonateData.redirect,
       })
 
       return

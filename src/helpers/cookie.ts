@@ -4,7 +4,8 @@ function setCookie<T>(
   auth: Auth,
   key: string,
   value: T,
-  expires: boolean
+  expires: boolean,
+  time?: number
 ): void {
   const options = auth.options.cookie
 
@@ -21,7 +22,9 @@ function setCookie<T>(
     }
 
     if (prop === "expires") {
-      value = expires ? "" : getDate(prop)
+      value = expires
+        ? ""
+        : getDate(time ?? (value as Exclude<typeof value, true>))
     }
 
     if (value === true) {
@@ -65,7 +68,7 @@ function get(auth: Auth, key: string): string | null {
 }
 
 function remove(auth: Auth, key: string): void {
-  setCookie(auth, key, "", false)
+  setCookie(auth, key, "", false, -864e5)
 }
 
 const cookie = {
