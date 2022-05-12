@@ -50,7 +50,7 @@ const __defaultOption: Partial<Options> = {
     method: "GET",
     enabled: true,
   },
-  refreshData: {
+  refreshToken: {
     url: "auth/refresh",
     method: "GET",
     enabled: true,

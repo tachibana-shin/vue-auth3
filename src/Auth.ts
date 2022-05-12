@@ -1,4 +1,4 @@
-import { AxiosRequestConfig, AxiosResponse } from "axios"
+import { AxiosRequestConfig } from "axios"
 import { App, reactive, shallowRef } from "vue"
 import {
   RouteLocationNormalized,
@@ -16,21 +16,7 @@ import Roles from "./type/Roles"
 import { compare, getProperty, toArray } from "./utils"
 import extend from "./utils/extend"
 
-function processInvalidToken(auth: Auth, res: AxiosResponse): void {
-  if (!auth.options.drivers.http.invalidToken?.(auth, res)) {
-    return
-  }
-
-  // eslint-disable-next-line functional/no-let
-  let redirect
-  if (auth) {
-    redirect = auth.redirect()?.to || auth.options.authRedirect
-  }
-
-  processLogout(auth, redirect)
-}
-
-function processLogout(auth: Auth, redirect?: RouteLocationRaw) {
+function logout(auth: Auth, redirect?: RouteLocationRaw) {
   $cookie.remove(auth, auth.options.tokenImpersonateKey)
   $cookie.remove(auth, auth.options.tokenDefaultKey)
 
@@ -46,10 +32,10 @@ function processLogout(auth: Auth, redirect?: RouteLocationRaw) {
   // eslint-disable-next-line functional/immutable-data
   auth.state.data = null
 
-  processRedirect(auth, redirect)
+  routerPush(auth, redirect)
 }
 
-function processRedirect(auth: Auth, redirect?: RouteLocationRaw) {
+function routerPush(auth: Auth, redirect?: RouteLocationRaw) {
   if (redirect) {
     // eslint-disable-next-line @typescript-eslint/no-empty-function
     auth.options.plugins.router?.push(redirect).catch(() => {})
@@ -57,7 +43,7 @@ function processRedirect(auth: Auth, redirect?: RouteLocationRaw) {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-function processFetch(auth: Auth, data: any, redirect?: RouteLocationRaw) {
+function setUserData(auth: Auth, data: any, redirect?: RouteLocationRaw) {
   // eslint-disable-next-line functional/immutable-data
   auth.state.data = data
 
@@ -66,50 +52,9 @@ function processFetch(auth: Auth, data: any, redirect?: RouteLocationRaw) {
   // eslint-disable-next-line functional/immutable-data
   auth.state.authenticated = true
 
-  processRedirect(auth, redirect)
+  routerPush(auth, redirect)
 }
 
-async function processAuthenticated(auth: Auth, cb: () => void) {
-  if (auth.state.authenticated === null && $token.get(auth, null)) {
-    if (auth.options.fetchData.enabled) {
-      await auth.fetch()
-
-      return cb()
-    }
-
-    processFetch(auth, {})
-
-    return cb()
-  }
-
-  // eslint-disable-next-line functional/immutable-data
-  auth.state.loaded = true
-
-  return cb()
-}
-
-function processRouterBeforeEach(auth: Auth, cb: () => void) {
-  const isTokenExpired = !$token.get(auth, null)
-
-  if (isTokenExpired && auth.state.authenticated) {
-    processLogout(auth)
-  }
-
-  if (
-    !isTokenExpired &&
-    !auth.state.loaded &&
-    auth.options.refreshData.enabled
-  ) {
-    auth.refresh().then(
-      () => processAuthenticated(auth, cb),
-      () => processAuthenticated(auth, cb)
-    )
-
-    return
-  }
-
-  processAuthenticated(auth, cb)
-}
 type Redirect =
   | RouteLocationRaw
   | ((to: RouteLocationNormalized) => RouteLocationRaw)
@@ -266,7 +211,7 @@ function processImpersonate(
   // eslint-disable-next-line functional/immutable-data
   auth.state.impersonating = true
 
-  processRedirect(auth, redirect)
+  routerPush(auth, redirect)
 }
 
 function processUnimpersonate(auth: Auth, redirect?: undefined) {
@@ -274,7 +219,7 @@ function processUnimpersonate(auth: Auth, redirect?: undefined) {
   // eslint-disable-next-line functional/immutable-data
   auth.state.impersonating = false
 
-  processRedirect(auth, redirect)
+  routerPush(auth, redirect)
 }
 
 function parseRedirectUri(uri = ""): string {
@@ -308,7 +253,7 @@ export default class Auth {
   public tCurrent: RouteLocationNormalized | null = null
   public tStatusType: number | null = null
 
-  install(app: App, key: symbol | string = authKey) {
+  public install(app: App, key: symbol | string = authKey) {
     app.provide(key, this)
 
     // eslint-disable-next-line functional/immutable-data
@@ -321,32 +266,57 @@ export default class Auth {
 
     // _initRefreshInterval()
     if (
-      this.options.refreshData.enabled &&
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      this.options.refreshData.interval! > 0
+      this.options.refreshToken.enabled &&
+      this.options.refreshToken.interval !== false &&
+      this.options.refreshToken.interval !== void 0 &&
+      this.options.refreshToken.interval > 0
     ) {
       setInterval(() => {
-        if (this.options.refreshData.enabled && !!$token.get(this, null)) {
+        if (this.options.refreshToken.enabled && !!$token.get(this, null)) {
           this.refresh()
         }
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      }, this.options.refreshData.interval! * 1000 * 60) // In minutes.
+      }, this.options.refreshToken.interval! * 1000 * 60) // In minutes.
     }
 
-    this.options.plugins.router?.beforeEach((to, from, next) => {
+    this.options.plugins.router?.beforeEach(async (to, from, next) => {
       this.tPrev = this.tCurrent
       this.tCurrent = from
-      processRouterBeforeEach(this, () => {
-        const authMeta = getAuthMeta(to)
 
-        processTransitionEach(this, to, authMeta, (redirect) => {
-          if (!redirect) {
-            next()
-            return
-          }
+      const isTokenExpired = !$token.get(this, null)
 
-          next(redirect)
-        })
+      if (isTokenExpired && this.state.authenticated) {
+        logout(this)
+      }
+
+      if (
+        !isTokenExpired &&
+        !this.state.loaded &&
+        this.options.refreshToken.enabled
+      ) {
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
+        await this.refresh().catch(() => {})
+      }
+
+      if (this.state.authenticated === null && $token.get(this, null)) {
+        if (this.options.fetchData.enabled) {
+          await this.fetch()
+        } else {
+          setUserData(this, {})
+        }
+      } else {
+        this.state.loaded = true
+      }
+
+      const authMeta = getAuthMeta(to)
+
+      processTransitionEach(this, to, authMeta, (redirect) => {
+        if (!redirect) {
+          next()
+          return
+        }
+
+        next(redirect)
       })
     })
   }
@@ -390,7 +360,9 @@ export default class Auth {
       return response
     }
 
-    processInvalidToken(this, response)
+    if (this.options.drivers.http.invalidToken?.(this, response)) {
+      logout(this, this.redirect()?.to || this.options.authRedirect)
+    }
 
     const token = this.options.drivers.auth.response(this, response)
 
@@ -410,16 +382,21 @@ export default class Auth {
     return this.state.loaded
   }
 
+  private __timer_load: NodeJS.Timer | null | undefined
   load() {
     return new Promise<void>((resolve) => {
-      const timer: NodeJS.Timer | null = setInterval(() => {
+      this.__timer_load = setInterval(() => {
         if (this.state.loaded) {
-          clearInterval(timer as unknown as number)
+          clearInterval(this.__timer_load as unknown as number)
 
           resolve()
         }
       }, 50)
     })
+  }
+
+  cancel() {
+    clearInterval(this.__timer_load as unknown as number)
   }
 
   redirect() {
@@ -428,14 +405,14 @@ export default class Auth {
 
   user(data: undefined) {
     if (data !== undefined) {
-      processFetch(this, data)
+      setUserData(this, data)
     }
 
     return this.state.data
   }
 
   check(role?: Roles, key: string = this.options.rolesKey) {
-    if (this.state.authenticated === true) {
+    if (this.state.authenticated) {
       if (role) {
         return compare(role, getProperty(this.state.data || {}, key))
       }
@@ -479,20 +456,34 @@ export default class Auth {
     return $token.get<string | null>(this, name)
   }
 
+  /**
+   * @request auth/user
+   * @returns Promise<user data> info user data (exm: {
+   * 
+        username: "Tachibana Shin",
+
+        email: "asjwepit32r@duck.com"
+
+    })
+   */
   async fetch(data?: Options["fetchData"]) {
     const response = await this.http({
       ...this.options.fetchData,
       ...data,
     })
 
-    processFetch(this, response.data, data?.redirect)
+    setUserData(this, response.data, data?.redirect)
 
     return response
   }
 
-  refresh(data?: Required<Options>["refreshData"]) {
+  /**
+   * @request auth/refresh
+   * @returns Promise exists token refresh in Authorizer
+   */
+  public refresh(data?: Required<Options>["refreshToken"]) {
     return this.http({
-      ...this.options.refreshData,
+      ...this.options.refreshToken,
       ...(data || {}),
     })
   }
@@ -516,7 +507,7 @@ export default class Auth {
       return response
     }
 
-    processRedirect(this, registerData.redirect)
+    routerPush(this, registerData.redirect)
 
     return response
   }
@@ -537,7 +528,7 @@ export default class Auth {
         redirect: loginData.redirect,
       })
     } else {
-      processFetch(this, response.data, loginData.redirect)
+      setUserData(this, response.data, loginData.redirect)
     }
 
     return response
@@ -572,7 +563,7 @@ export default class Auth {
       await this.http(logoutData)
     }
 
-    processLogout(this, logoutData.redirect)
+    logout(this, logoutData.redirect)
   }
 
   async impersonate(data: Required<Options>["impersonateData"]) {
@@ -594,7 +585,7 @@ export default class Auth {
       return
     }
 
-    processRedirect(this, impersonateData.redirect)
+    routerPush(this, impersonateData.redirect)
   }
 
   async unimpersonate(data: Required<Options>["unimpersonateData"]) {

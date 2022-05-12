@@ -58,9 +58,9 @@ type Options = {
     enabled?: boolean
     redirect?: RouteLocationRaw
   }
-  refreshData?: Omit<HttpData, "redirect"> & {
+  refreshToken?: Omit<HttpData, "redirect"> & {
     enabled?: boolean
-    interval?: number
+    interval?: number | false
   }
   impersonateData?: HttpData & {
     fetchUser?: boolean
