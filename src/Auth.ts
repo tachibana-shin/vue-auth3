@@ -25,7 +25,7 @@ function logout(auth: Auth, redirect?: RouteLocationRaw) {
 
   $token.remove(auth, auth.options.staySignedInKey)
 
-  $cookie.remove(auth, auth.options.userKey)
+  $token.remove(auth, auth.options.userKey)
 
   // eslint-disable-next-line functional/immutable-data
   auth.state.loaded = true
