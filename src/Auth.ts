@@ -1,5 +1,5 @@
 import { AxiosRequestConfig } from "axios"
-import { App, reactive, shallowRef } from "vue"
+import { App, reactive, shallowRef, watch } from "vue"
 import {
   RouteLocationNormalized,
   RouteLocationRaw,
@@ -24,6 +24,8 @@ function logout(auth: Auth, redirect?: RouteLocationRaw) {
   $token.remove(auth, auth.options.tokenDefaultKey)
 
   $token.remove(auth, auth.options.staySignedInKey)
+
+  $cookie.remove(auth, auth.options.userKey)
 
   // eslint-disable-next-line functional/immutable-data
   auth.state.loaded = true
@@ -235,11 +237,13 @@ function parseRedirectUri(uri = ""): string {
 
 export default class Auth {
   public readonly state = reactive({
-    data: null,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    data: <any | null>null,
     loaded: false,
     authenticated: <boolean | null>null, // TODO: false ?
-    impersonating: <boolean | void>undefined,
+    impersonating: <boolean | null>null,
     remember: <boolean | null>null,
+    cacheUser: <boolean>false,
   })
   public _redirect = shallowRef<{
     type: number | null
@@ -263,6 +267,34 @@ export default class Auth {
   constructor(options: Options) {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     this.options = extend(__defaultOption, 2, options) as any
+
+    this.state.cacheUser = this.options.fetchData.cache ?? false
+
+    // eslint-disable-next-line functional/no-let
+    let dataWatcher: ReturnType<typeof watch> | null
+    watch(
+      () => this.state.cacheUser,
+      (value) => {
+        if (value) {
+          //cache init ;
+          dataWatcher = watch(
+            () => this.state.data,
+            (data) => {
+              $token.set(this, this.options.userKey, data, false)
+            },
+            {
+              deep: true,
+            }
+          )
+        } else {
+          dataWatcher?.()
+          $token.remove(this, this.options.userKey)
+        }
+      },
+      {
+        immediate: true,
+      }
+    )
 
     // _initRefreshInterval()
     if (
@@ -299,10 +331,13 @@ export default class Auth {
       }
 
       if (this.state.authenticated === null && $token.get(this, null)) {
-        if (this.options.fetchData.enabled) {
+        const userCache = $token.get(this, this.options.userKey)
+        const isUserCacheReady = userCache && this.options.fetchData.cache
+
+        if (this.options.fetchData.enabled && !isUserCacheReady) {
           await this.fetch()
         } else {
-          setUserData(this, {})
+          setUserData(this, isUserCacheReady ? userCache : {})
         }
       } else {
         this.state.loaded = true
@@ -428,7 +463,7 @@ export default class Auth {
       ? true
       : false
 
-    if (this.state.impersonating === undefined) {
+    if (this.state.impersonating === null) {
       // eslint-disable-next-line functional/immutable-data
       this.state.impersonating = impersonating
     }
@@ -467,11 +502,15 @@ export default class Auth {
     })
    */
   async fetch(data?: Options["fetchData"]) {
-    const response = await this.http({
+    const fetchData = {
       ...this.options.fetchData,
       ...data,
-    })
+      cache: data?.cache ?? this.state.cacheUser,
+    }
+    const response = await this.http(fetchData)
 
+    // eslint-disable-next-line functional/immutable-data
+    this.state.cacheUser = fetchData.cache ?? this.state.cacheUser
     setUserData(this, response.data, data?.redirect)
 
     return response
@@ -526,6 +565,7 @@ export default class Auth {
     if (loginData.fetchUser || this.options.fetchData.enabled) {
       await this.fetch({
         redirect: loginData.redirect,
+        cache: loginData.cacheUser,
       })
     } else {
       setUserData(this, response.data, loginData.redirect)
@@ -539,11 +579,11 @@ export default class Auth {
       setRemember(this, val)
     }
 
-    const remember = $token.get(this, this.options.rememberKey)
+    const remember = $token.get<boolean>(this, this.options.rememberKey)
 
     if (this.state.remember === undefined) {
       // eslint-disable-next-line functional/immutable-data
-      this.state.remember = remember === "true" ? true : false
+      this.state.remember = remember ?? false
     }
 
     return this.state.remember
@@ -580,6 +620,7 @@ export default class Auth {
     if (impersonateData.fetchUser || this.options.fetchData.enabled) {
       await this.fetch({
         redirect: impersonateData.redirect,
+        cache: impersonateData.cacheUser,
       })
 
       return
@@ -603,6 +644,7 @@ export default class Auth {
     if (unimpersonateData.fetchUser || this.options.fetchData.enabled) {
       await this.fetch({
         redirect: unimpersonateData.redirect,
+        cache: unimpersonateData.cacheUser,
       })
 
       return

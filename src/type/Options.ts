@@ -14,6 +14,7 @@ type Options = {
   //var
   rolesKey?: string
   rememberKey?: string
+  userKey?: string;
   staySignedInKey?: string
   tokenDefaultKey?: string
   tokenImpersonateKey?: string
@@ -41,22 +42,20 @@ type Options = {
     fetchUser?: boolean
     staySignedIn?: boolean
     remember?: boolean
-    redirect?: RouteLocationRaw
   }
   loginData?: HttpData & {
     fetchUser?: boolean
     staySignedIn?: boolean
     remember?: boolean
-    redirect?: RouteLocationRaw
+    cacheUser?: boolean
   }
 
   logoutData?: HttpData & {
     makeRequest?: boolean
-    redirect?: RouteLocationRaw
   }
-  fetchData?: Omit<HttpData, "redirect"> & {
+  fetchData?: HttpData & {
     enabled?: boolean
-    redirect?: RouteLocationRaw
+    cache?: boolean;
   }
   refreshToken?: Omit<HttpData, "redirect"> & {
     enabled?: boolean
@@ -64,11 +63,12 @@ type Options = {
   }
   impersonateData?: HttpData & {
     fetchUser?: boolean
-    redirect?: RouteLocationRaw
+    cacheUser?: boolean
   }
   unimpersonateData?: HttpData & {
     fetchUser?: boolean
     makeRequest?: boolean
+    cacheUser?: boolean
   }
   oauth2Data?: HttpData & {
     fetchUser?: true

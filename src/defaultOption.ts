@@ -5,6 +5,7 @@ const __defaultOption: Partial<Options> = {
 
   rolesKey: "roles",
   rememberKey: "auth_remember",
+  userKey: "auth_user",
   staySignedInKey: "auth_stay_signed_in",
   tokenDefaultKey: "auth_token_default",
   tokenImpersonateKey: "auth_token_impersonate",
