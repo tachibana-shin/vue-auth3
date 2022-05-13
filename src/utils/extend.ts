@@ -11,6 +11,8 @@ export default function extend<T>(target: T, deep = 1, ...objs: any): any {
         obj[prop] !== null
       ) {
         extend((target as any)[prop], deep - 1, obj[prop])
+
+        continue
       }
 
       // eslint-disable-next-line functional/immutable-data
