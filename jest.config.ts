@@ -192,8 +192,8 @@ export default {
   // Whether to use watchman for file crawling
   // watchman: true,
   transform: {
-    "\\.m?ts$": "ts-jest"
+    "\\.m?ts$": "ts-jest",
   },
   // testRegex: "/src/**.*\\.test?\\.ts$",
   moduleFileExtensions: ["ts", "js"],
-};
+}

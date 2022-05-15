@@ -7,14 +7,14 @@ import CookieOptions from "./CookieOptions"
 import AuthDriver from "./drivers/AuthDriver"
 import OAuth2Driver from "./drivers/OAuth2Driver"
 
-type HttpData = AxiosRequestConfig &{
+type HttpData = AxiosRequestConfig & {
   redirect?: RouteLocationRaw
 }
 type Options = {
   //var
   rolesKey?: string
   rememberKey?: string
-  userKey?: string;
+  userKey?: string
   staySignedInKey?: string
   tokenDefaultKey?: string
   tokenImpersonateKey?: string
@@ -55,7 +55,7 @@ type Options = {
   }
   fetchData?: HttpData & {
     enabled?: boolean
-    cache?: boolean;
+    cache?: boolean
   }
   refreshToken?: Omit<HttpData, "redirect"> & {
     enabled?: boolean
@@ -85,8 +85,8 @@ type Options = {
   drivers: {
     auth: AuthDriver
     http: {
-      request: AxiosInstance;
-      invalidToken?: (auth: Auth, response: AxiosResponse) => boolean;
+      request: AxiosInstance
+      invalidToken?: (auth: Auth, response: AxiosResponse) => boolean
     }
     oauth2?: OAuth2Driver
   }

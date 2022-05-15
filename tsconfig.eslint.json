@@ -1,9 +1,5 @@
 {
-   // extend your base config so you don't have to redefine your compilerOptions
-   "extends": "./tsconfig.json",
-   "include": [
-      "*.config.ts",
-      "src/**/*.ts",
-      "src/**/*.spec.ts"
-   ]
+  // extend your base config so you don't have to redefine your compilerOptions
+  "extends": "./tsconfig.json",
+  "include": ["*.config.ts", "src/**/*.ts", "src/**/*.spec.ts"]
 }

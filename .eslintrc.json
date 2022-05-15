@@ -7,11 +7,7 @@
   "env": {
     "es6": true
   },
-  "ignorePatterns": [
-    "node_modules",
-    "build",
-    "coverage"
-  ],
+  "ignorePatterns": ["node_modules", "build", "coverage"],
   "plugins": [
     "import",
     "eslint-comments",
@@ -58,10 +54,7 @@
         "ignoreCase": true
       }
     ],
-    "quotes": [
-      "error",
-      "double"
-    ],
+    "quotes": ["error", "double"],
     "functional/no-class": "off",
     "functional/no-this-expression": "off",
     "functional/no-return-void": "off",

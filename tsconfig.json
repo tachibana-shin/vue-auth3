@@ -4,17 +4,13 @@
     "module": "ESNext" /* Specify module code generation: 'none', 'commonjs', 'amd', 'system', 'umd', 'es2015', 'es2020', or 'ESNext'. */,
     "declaration": true /* Generates corresponding '.d.ts' file. */,
     //  "outDir": "./src" /* Redirect output structure to the directory. */,
-    "strict": true, /* Enable all strict type-checking options. */
+    "strict": true /* Enable all strict type-checking options. */,
     "declarationDir": "types",
     "moduleResolution": "node",
     "skipLibCheck": true,
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": false
   },
-  "include": [
-    "src"
-  ],
-  "exclude": [
-    "node_modules",
-    "test"
-  ]
+  "include": ["src"],
+  "exclude": ["node_modules", "test"]
 }
