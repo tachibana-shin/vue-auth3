@@ -471,11 +471,7 @@ export default class Auth {
     return this.state.impersonating
   }
 
-  token(
-    name: string | null = null,
-    token: string | null = null,
-    expires?: boolean
-  ) {
+  token(name: string | null = null, token: string | null, expires?: boolean) {
     if (token !== undefined) {
       if (token === null) {
         $token.remove(this, name)
