@@ -6,6 +6,9 @@ export default defineConfig({
   description:
     "Plugin that inherits from @websanova/vue-auth brings great auth manager to vue 3!",
   lastUpdated: true,
+  head: [
+    ["link", { rel: "icon", type: "image/svg+xml", href: "/icon.svg" }]
+  ],
 
   themeConfig: {
     logo: "/icon.svg",
