@@ -1,6 +1,6 @@
-import AuthDriver from "../../type/drivers/AuthDriver"
+import { defineAuthDriver } from "../../type/drivers/AuthDriver"
 
-const driver: AuthDriver = {
+export default defineAuthDriver({
   request(auth, options, token) {
     // eslint-disable-next-line functional/immutable-data
     options.headers["Authorization"] = "Bearer " + token
@@ -19,6 +19,4 @@ const driver: AuthDriver = {
 
     return null
   },
-}
-
-export default driver
+})

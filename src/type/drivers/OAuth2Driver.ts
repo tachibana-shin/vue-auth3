@@ -11,3 +11,6 @@ type OAuth2Driver = {
 }
 
 export default OAuth2Driver
+export function defineOAuth2Driver(opts: OAuth2Driver) {
+  return opts
+}

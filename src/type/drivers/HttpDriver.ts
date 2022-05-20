@@ -8,3 +8,6 @@ type HttpDriver = {
   invalidToken?: (auth: Auth, response: AxiosResponse) => boolean
 }
 export default HttpDriver
+export function defineHttpDriver(opts: HttpDriver) {
+  return opts
+}

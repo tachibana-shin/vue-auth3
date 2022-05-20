@@ -1,6 +1,6 @@
-import AuthDriver from "../../type/drivers/AuthDriver"
+import { defineAuthDriver } from "../../type/drivers/AuthDriver"
 
-const driver: AuthDriver = {
+export default defineAuthDriver({
   tokens: [
     "Token-Type",
     "Access-Token",
@@ -56,6 +56,4 @@ const driver: AuthDriver = {
 
     return null
   },
-}
-
-export default driver
+})

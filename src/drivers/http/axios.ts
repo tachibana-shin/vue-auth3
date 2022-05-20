@@ -1,9 +1,7 @@
 import axios from "axios"
 
-import HttpDriver from "../../type/drivers/HttpDriver"
+import { defineHttpDriver } from "../../type/drivers/HttpDriver"
 
-const driver: HttpDriver = {
+export default defineHttpDriver({
   request: axios,
-}
-
-export default driver
+})

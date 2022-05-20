@@ -35,7 +35,7 @@ export default boot(({ app, router, store }) => {
       enabled: true,
       cache: true,
     },
-    refreshData: {
+    refreshToken: {
       enabled: false,
     },
 

@@ -14,3 +14,6 @@ type AuthDriver = {
 }
 
 export default AuthDriver
+export function defineAuthDriver(opts: AuthDriver) {
+  return opts
+}

@@ -1,6 +1,6 @@
-import OAuth2Driver from "../../type/drivers/OAuth2Driver"
+import { defineOAuth2Driver } from "../../type/drivers/OAuth2Driver"
 
-const driver: OAuth2Driver = {
+export default defineOAuth2Driver({
   url: "https://accounts.google.com/o/oauth2/auth",
 
   params: {
@@ -10,6 +10,4 @@ const driver: OAuth2Driver = {
     scope: "email",
     state: {},
   },
-}
-
-export default driver
+})
