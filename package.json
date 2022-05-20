@@ -13,7 +13,7 @@
       "require": "./dist/index.js",
       "types": "./dist/index.d.ts"
     },
-    "./": "./"
+    "./drivers/": "./dist/drivers/"
   },
   "files": [
     "dist"
@@ -67,8 +67,14 @@
     "type": "git",
     "url": "git://github.com/tachibana-shin/vue-auth3.git"
   },
-  "homepage": "https://tachibana-shin.github.io/vue-auth3",
+  "homepage": "https://vue-auth3.js.org",
   "keywords": [
-    "vue-auth3"
+    "vue-auth3",
+    "vue",
+    "bearer",
+    "authen",
+    "vue 3",
+    "vue-auth",
+    "@websanova/vue-auth"
   ]
 }
