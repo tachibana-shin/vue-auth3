@@ -1,7 +1,11 @@
+<p align="center">
+  <img src="./docs/public/icon.svg" width="180px">
+</p>
+
 # vue-auth3
 
 This plugin is a combination of @websanova/vue-auth and Vue3 and Axios!
-[View docs](https://tachibana-shin.github.io/vue-auth3)
+[View docs](https://vue-auth3.js.org)
 
 [![Build](https://github.com/tachibana-shin/vue-auth3/actions/workflows/docs.yml/badge.svg)](https://github.com/tachibana-shin/vue-auth3/actions/workflows/docs.yml)
 [![NPM](https://badge.fury.io/js/vue-auth3.svg)](http://badge.fury.io/js/vue-auth3)
