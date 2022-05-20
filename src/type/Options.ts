@@ -56,9 +56,11 @@ type Options = {
   fetchData?: HttpData & {
     enabled?: boolean
     cache?: boolean
+    enabledInBackground?: boolean
   }
   refreshToken?: Omit<HttpData, "redirect"> & {
     enabled?: boolean
+    enabledInBackground?: boolean
     interval?: number | false
   }
   impersonateData?: HttpData & {
@@ -88,7 +90,10 @@ type Options = {
       request: AxiosInstance
       invalidToken?: (auth: Auth, response: AxiosResponse) => boolean
     }
-    oauth2?: OAuth2Driver
+    oauth2?: {
+      facebook?: OAuth2Driver
+      google?: OAuth2Driver
+    }
   }
 }
 

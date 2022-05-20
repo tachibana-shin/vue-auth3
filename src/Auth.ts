@@ -298,13 +298,18 @@ export default class Auth {
 
     // _initRefreshInterval()
     if (
-      this.options.refreshToken.enabled &&
+      (this.options.refreshToken.enabled ||
+        this.options.refreshToken.enabledInBackground) &&
       this.options.refreshToken.interval !== false &&
       this.options.refreshToken.interval !== void 0 &&
       this.options.refreshToken.interval > 0
     ) {
       setInterval(() => {
-        if (this.options.refreshToken.enabled && !!$token.get(this, null)) {
+        if (
+          (this.options.refreshToken.enabled ||
+            this.options.refreshToken.enabledInBackground) &&
+          !!$token.get(this, null)
+        ) {
           this.refresh()
         }
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -321,13 +326,13 @@ export default class Auth {
         logout(this)
       }
 
-      if (
-        !isTokenExpired &&
-        !this.state.loaded &&
-        this.options.refreshToken.enabled
-      ) {
-        // eslint-disable-next-line @typescript-eslint/no-empty-function
-        await this.refresh().catch(() => {})
+      if (!isTokenExpired && !this.state.loaded) {
+        if (this.options.refreshToken.enabled) {
+          // eslint-disable-next-line @typescript-eslint/no-empty-function
+          await this.refresh().catch(() => {})
+        } else if (this.options.refreshToken.enabledInBackground) {
+          void this.refresh().catch(() => {})
+        }
       }
 
       if (this.state.authenticated === null && $token.get(this, null)) {
@@ -338,6 +343,13 @@ export default class Auth {
           await this.fetch()
         } else {
           setUserData(this, isUserCacheReady ? userCache : {})
+        }
+
+        if (
+          !this.options.fetchData.enabled &&
+          this.options.fetchData.enabledInBackground
+        ) {
+          void this.fetch()
         }
       } else {
         this.state.loaded = true
