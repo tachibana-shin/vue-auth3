@@ -216,7 +216,7 @@ function processImpersonate(
   routerPush(auth, redirect)
 }
 
-function processUnimpersonate(auth: Auth, redirect?: undefined) {
+function processUnimpersonate(auth: Auth, redirect?: any) {
   $token.remove(auth, auth.options.tokenImpersonateKey)
   // eslint-disable-next-line functional/immutable-data
   auth.state.impersonating = false
@@ -450,7 +450,7 @@ export default class Auth {
     return this._redirect.value
   }
 
-  user(data: undefined) {
+  user(data?: unknown) {
     if (data !== undefined) {
       setUserData(this, data)
     }
@@ -535,7 +535,7 @@ export default class Auth {
     })
   }
 
-  async register(data: Required<Options>["registerData"]) {
+  async register(data?: Required<Options>["registerData"]) {
     const registerData = {
       ...this.options.registerData,
       ...data,
@@ -559,7 +559,7 @@ export default class Auth {
     return response
   }
 
-  async login(data: Required<Options>["loginData"]) {
+  async login(data?: Required<Options>["loginData"]) {
     const loginData = {
       ...this.options.loginData,
       ...data,
@@ -601,7 +601,7 @@ export default class Auth {
     setRemember(this, void 0)
   }
 
-  async logout(data: Required<Options>["logoutData"]) {
+  async logout(data?: Required<Options>["logoutData"]) {
     const logoutData = {
       ...this.options.logoutData,
       ...data,
@@ -614,7 +614,7 @@ export default class Auth {
     logout(this, logoutData.redirect)
   }
 
-  async impersonate(data: Required<Options>["impersonateData"]) {
+  async impersonate(data?: Required<Options>["impersonateData"]) {
     const impersonateData = {
       ...this.options.impersonateData,
       ...data,
@@ -637,7 +637,7 @@ export default class Auth {
     routerPush(this, impersonateData.redirect)
   }
 
-  async unimpersonate(data: Required<Options>["unimpersonateData"]) {
+  async unimpersonate(data?: Required<Options>["unimpersonateData"]) {
     const unimpersonateData = {
       ...this.options.unimpersonateData,
       ...data,
