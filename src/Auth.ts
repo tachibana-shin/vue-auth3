@@ -450,7 +450,7 @@ export default class Auth {
     return this._redirect.value
   }
 
-  user(data?: unknown) {
+  user<U extends object>(data?: U): U | null {
     if (data !== undefined) {
       setUserData(this, data)
     }

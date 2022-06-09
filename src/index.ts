@@ -1,4 +1,4 @@
-import { inject } from "vue"
+import { computed, ComputedRef, inject } from "vue"
 
 import Auth from "./Auth"
 import { authKey } from "./injectionKey"
@@ -12,6 +12,15 @@ export function createAuth(options: Options) {
 }
 export function useAuth(key: symbol | string = authKey): Auth {
   return inject(key) as Auth
+}
+export function useUser<User extends object>(
+  key: symbol | string = authKey
+): ComputedRef<User | null> {
+  const auth = useAuth(key)
+
+  return computed(() => {
+    return auth.user()
+  })
 }
 
 export type {
