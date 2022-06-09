@@ -1,6 +1,6 @@
 {
   "name": "vue-auth3",
-  "version": "0.0.22",
+  "version": "0.0.23",
   "author": "Tachibana Shin <45375496+tachibana-shin@users.noreply.github.com>",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
