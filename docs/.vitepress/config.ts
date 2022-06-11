@@ -71,6 +71,13 @@ function getGuideSidebar() {
         { text: "Base", link: "/options/options-generate" },
       ],
     },
+    {
+      text: "Composition API",
+      children: [
+        { text: "useAuth", link: "/composition-api/useAuth" },
+        { text: "useUser", link: "/composition-api/useUser" },
+      ]
+    }
   ]
 }
 
