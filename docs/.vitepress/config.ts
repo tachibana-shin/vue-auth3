@@ -19,7 +19,11 @@ export default defineConfig({
     editLinkText: "Edit this page on Github",
     lastUpdated: "Last Updated",
 
-    // algolia
+    algolia: {
+      appId: "J4V0UWXB3Q",
+      apiKey: "884de243dd8d9c0d6b4ead98f5c23e41",
+      indexName: "vue-auth3-js",
+    },
 
     nav: [
       { text: "Guide", link: "/", activeMatch: "^/$|^/guide/" },
