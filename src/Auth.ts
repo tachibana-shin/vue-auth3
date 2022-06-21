@@ -216,6 +216,7 @@ function processImpersonate(
   routerPush(auth, redirect)
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function processUnimpersonate(auth: Auth, redirect?: any) {
   $token.remove(auth, auth.options.tokenImpersonateKey)
   // eslint-disable-next-line functional/immutable-data
@@ -331,6 +332,7 @@ export default class Auth {
           // eslint-disable-next-line @typescript-eslint/no-empty-function
           await this.refresh().catch(() => {})
         } else if (this.options.refreshToken.enabledInBackground) {
+          // eslint-disable-next-line @typescript-eslint/no-empty-function
           void this.refresh().catch(() => {})
         }
       }
@@ -346,7 +348,7 @@ export default class Auth {
         }
 
         if (
-          !this.options.fetchData.enabled &&
+          this.options.fetchData.enabled &&
           this.options.fetchData.enabledInBackground
         ) {
           void this.fetch()
@@ -450,6 +452,7 @@ export default class Auth {
     return this._redirect.value
   }
 
+  // eslint-disable-next-line @typescript-eslint/ban-types
   user<U extends object>(data?: U): U | null {
     if (data !== undefined) {
       setUserData(this, data)
