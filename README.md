@@ -29,7 +29,7 @@ CDN:
 ```ts
 import { createAuth } from "vue-auth3"
 import { boot } from "quasar/wrappers"
-import driverAuthBearer from "vue-auth3/dist/drivers/auth/bearer"
+import driverAuthBearer from "vue-auth3/drivers/auth/bearer"
 
 export default boot(({ app, router, store }) => {
   const auth = createAuth({
