@@ -18,6 +18,8 @@ So `vue-auth 3` was born to overcome these problems and fully support TypeScript
 
 ```ts
 import { createAuth } from "vue-auth3"
+import axios from "axios"
+import driverAuthBearer from "vue-auth3/drivers/auth/bearer"
 
 const auth = createAuth({
   fetchData: {
@@ -28,6 +30,12 @@ const auth = createAuth({
   refreshToken: {
     enabled: false, // refresh token in goto page
     enabledInBackground: true, // refresh token in background
+  },
+  drivers: {
+    http: {
+      request: axios,
+    },
+    auth: driverAuthBearer,
   },
 })
 ```
