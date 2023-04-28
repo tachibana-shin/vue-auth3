@@ -50,7 +50,8 @@ If your app requires [cross-domain](https://developer.mozilla.org/en-US/docs/Web
 
 ## HTTP Drivers
 
-This driver has three main purposes.
+- [axios](https://github.com/tachibana-shin/vue-auth3/blob/master/src/drivers/http/axios.ts)
+- [fetch](https://github.com/tachibana-shin/vue-auth3/blob/master/src/drivers/http/fetch.ts)
 
 #### 1\. Make HTTP requests to our API.
 
