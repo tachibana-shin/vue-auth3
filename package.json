@@ -13,7 +13,15 @@
       "require": "./dist/index.js",
       "types": "./dist/index.d.ts"
     },
-    "./drivers/": "./dist/drivers/"
+    "./drivers/": "./dist/drivers/",
+    "./dist/": "./dist/"
+  },
+  "typesVersions": {
+    "*": {
+      "drivers/*": [
+        "dist/drivers/*"
+      ]
+    }
   },
   "files": [
     "dist"
