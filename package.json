@@ -33,6 +33,7 @@
     "@typescript-eslint/eslint-plugin": "^4.0.1",
     "@typescript-eslint/parser": "^4.0.1",
     "axios": "^0.27.2",
+    "bumpp": "^9.1.0",
     "cspell": "^4.1.0",
     "esbuild": "^0.13.14",
     "eslint": "^7.32.0",
@@ -61,7 +62,7 @@
   },
   "scripts": {
     "build": "tsup",
-    "prepublishOnly": "yarn build",
+    "prepublishOnly": "bumpp package.json --tags --push && yarn build",
     "docs": "typedoc src",
     "test:coverage": "jest",
     "test": "run-s test:*",
