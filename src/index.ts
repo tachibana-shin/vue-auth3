@@ -13,6 +13,7 @@ export function createAuth(options: Options) {
 export function useAuth(key: symbol | string = authKey): Auth {
   return inject(key) as Auth
 }
+// eslint-disable-next-line @typescript-eslint/ban-types
 export function useUser<User extends object>(
   key: symbol | string = authKey
 ): ComputedRef<User | null> {
