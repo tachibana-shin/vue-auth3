@@ -1,16 +1,16 @@
-import { AxiosRequestConfig, AxiosRequestHeaders, AxiosResponse } from "axios"
-
 import Auth from "../../Auth"
 
+import HttpDriver from "./HttpDriver"
+
 type OptionRequest = {
-  data?: AxiosRequestConfig["data"]
-  headers: AxiosRequestHeaders
+  data?: Parameters<HttpDriver["request"]>[0]["data"]
+  headers:  Required<Parameters<HttpDriver["request"]>[0]>["headers"]
 }
 
 type AuthDriver = {
   tokens?: string[]
   request: (auth: Auth, options: OptionRequest, token: string) => OptionRequest
-  response: (auth: Auth, response: AxiosResponse) => string | null
+  response: (auth: Auth, response: Awaited<ReturnType<HttpDriver["request"]>>) => string | null
 }
 
 export default AuthDriver

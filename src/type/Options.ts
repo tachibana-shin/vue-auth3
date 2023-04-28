@@ -1,13 +1,13 @@
-import type { AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios"
 import type { RouteLocationRaw, Router } from "vue-router"
 
 import Auth from "../Auth"
 
 import CookieOptions from "./CookieOptions"
 import AuthDriver from "./drivers/AuthDriver"
+import HttpDriver from "./drivers/HttpDriver"
 import OAuth2Driver from "./drivers/OAuth2Driver"
 
-type HttpData = AxiosRequestConfig & {
+type HttpData = Parameters< HttpDriver["request"]  >[0]& {
   redirect?: RouteLocationRaw
 }
 type Options = {
@@ -47,7 +47,7 @@ type Options = {
     fetchUser?: boolean
     staySignedIn?: boolean
     remember?: boolean
-    cacheUser?: boolean
+    cacheUser?: RequestCache
   }
 
   logoutData?: HttpData & {
@@ -55,7 +55,7 @@ type Options = {
   }
   fetchData?: HttpData & {
     enabled?: boolean
-    cache?: boolean
+    cache?: RequestCache
     enabledInBackground?: boolean
   }
   refreshToken?: Omit<HttpData, "redirect"> & {
@@ -65,12 +65,12 @@ type Options = {
   }
   impersonateData?: HttpData & {
     fetchUser?: boolean
-    cacheUser?: boolean
+    cacheUser?: RequestCache
   }
   unimpersonateData?: HttpData & {
     fetchUser?: boolean
     makeRequest?: boolean
-    cacheUser?: boolean
+    cacheUser?: RequestCache
   }
   oauth2Data?: HttpData & {
     fetchUser?: true
@@ -86,10 +86,7 @@ type Options = {
 
   drivers: {
     auth: AuthDriver
-    http: {
-      request: AxiosInstance
-      invalidToken?: (auth: Auth, response: AxiosResponse) => boolean
-    }
+    http: HttpDriver
     oauth2?: {
       facebook?: OAuth2Driver
       google?: OAuth2Driver

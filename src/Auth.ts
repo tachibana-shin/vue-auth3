@@ -1,4 +1,3 @@
-import { AxiosRequestConfig } from "axios"
 import { App, reactive, shallowRef, watch } from "vue"
 import {
   RouteLocationNormalized,
@@ -13,6 +12,7 @@ import getAuthMeta from "./helpme/getAuthMeta"
 import { authKey } from "./injectionKey"
 import Options from "./type/Options"
 import Roles from "./type/Roles"
+import HttpDriver from "./type/drivers/HttpDriver"
 import { compare, getProperty, toArray } from "./utils"
 import extend from "./utils/extend"
 
@@ -244,7 +244,7 @@ export default class Auth {
     authenticated: <boolean | null>null, // TODO: false ?
     impersonating: <boolean | null>null,
     remember: <boolean | null>null,
-    cacheUser: <boolean>false,
+    cacheUser: <RequestCache>"no-cache",
   })
   public _redirect = shallowRef<{
     type: number | null
@@ -269,7 +269,7 @@ export default class Auth {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     this.options = extend(__defaultOption, 2, options) as any
 
-    this.state.cacheUser = this.options.fetchData.cache ?? false
+    this.state.cacheUser = this.options.fetchData.cache ?? "no-cache"
 
     // eslint-disable-next-line functional/no-let
     let dataWatcher: ReturnType<typeof watch> | null
@@ -371,7 +371,7 @@ export default class Auth {
   }
 
   async http(
-    options: AxiosRequestConfig & {
+    options: Parameters<HttpDriver["request"]>[0] & {
       ignoreVueAuth?: boolean
       impersonating?: boolean
     }
@@ -512,7 +512,7 @@ export default class Auth {
 
     })
    */
-  async fetch(data?: Options["fetchData"]) {
+  async fetch(data?: Partial< Options["fetchData"] >) {
     const fetchData = {
       ...this.options.fetchData,
       ...data,
