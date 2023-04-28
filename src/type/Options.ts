@@ -7,7 +7,7 @@ import AuthDriver from "./drivers/AuthDriver"
 import HttpDriver from "./drivers/HttpDriver"
 import OAuth2Driver from "./drivers/OAuth2Driver"
 
-type HttpData = Parameters< HttpDriver["request"]  >[0]& {
+type HttpData = Partial<Parameters< HttpDriver["request"]  >[0]> & {
   redirect?: RouteLocationRaw
 }
 type Options = {
@@ -47,7 +47,7 @@ type Options = {
     fetchUser?: boolean
     staySignedIn?: boolean
     remember?: boolean
-    cacheUser?: RequestCache
+    cacheUser?: boolean
   }
 
   logoutData?: HttpData & {
@@ -65,12 +65,12 @@ type Options = {
   }
   impersonateData?: HttpData & {
     fetchUser?: boolean
-    cacheUser?: RequestCache
+    cacheUser?: boolean
   }
   unimpersonateData?: HttpData & {
     fetchUser?: boolean
     makeRequest?: boolean
-    cacheUser?: RequestCache
+    cacheUser?: boolean
   }
   oauth2Data?: HttpData & {
     fetchUser?: true

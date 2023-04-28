@@ -1,6 +1,4 @@
-import Options from "./type/Options"
-
-const __defaultOption: Partial<Options> = {
+const __defaultOption = {
   // Variables
 
   rolesKey: "roles",
@@ -55,7 +53,7 @@ const __defaultOption: Partial<Options> = {
     url: "auth/refresh",
     method: "GET",
     enabled: true,
-    interval: 30,
+    interval: <number|boolean|undefined>30,
   },
   impersonateData: {
     url: "auth/impersonate",
@@ -76,6 +74,6 @@ const __defaultOption: Partial<Options> = {
     redirect: "/",
     fetchUser: true,
   },
-}
+} as const
 
 export default __defaultOption

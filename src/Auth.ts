@@ -1,4 +1,4 @@
-import { App, reactive, shallowRef, watch } from "vue"
+import { App, DeepReadonly, reactive, shallowRef, watch } from "vue"
 import {
   RouteLocationNormalized,
   RouteLocationRaw,
@@ -40,7 +40,7 @@ function logout(auth: Auth, redirect?: RouteLocationRaw) {
 function routerPush(auth: Auth, redirect?: RouteLocationRaw) {
   if (redirect) {
     // eslint-disable-next-line @typescript-eslint/no-empty-function
-    auth.options.plugins.router?.push(redirect).catch(() => {})
+    auth.options.plugins?.router?.push(redirect).catch(() => {})
   }
 }
 
@@ -244,7 +244,7 @@ export default class Auth {
     authenticated: <boolean | null>null, // TODO: false ?
     impersonating: <boolean | null>null,
     remember: <boolean | null>null,
-    cacheUser: <RequestCache>"no-cache",
+    cacheUser: <boolean>false,
   })
   public _redirect = shallowRef<{
     type: number | null
@@ -252,7 +252,7 @@ export default class Auth {
     to: RouteLocationNormalized | null
   } | null>(null)
 
-  public readonly options: Required<Options>
+  public readonly options: typeof __defaultOption & DeepReadonly<Options>
   public currentToken: string | null = null
   public tPrev: RouteLocationNormalized | null = null
   public tCurrent: RouteLocationNormalized | null = null
@@ -266,10 +266,9 @@ export default class Auth {
   }
 
   constructor(options: Options) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    this.options = extend(__defaultOption, 2, options) as any
+    this.options = extend(__defaultOption, 2, options)
 
-    this.state.cacheUser = this.options.fetchData.cache ?? "no-cache"
+    this.state.cacheUser = this.options.fetchData.cache ? this.options.fetchData.cache !== "no-cache" : false 
 
     // eslint-disable-next-line functional/no-let
     let dataWatcher: ReturnType<typeof watch> | null
@@ -317,7 +316,7 @@ export default class Auth {
       }, this.options.refreshToken.interval! * 1000 * 60) // In minutes.
     }
 
-    this.options.plugins.router?.beforeEach(async (to, from, next) => {
+    this.options.plugins?.router?.beforeEach(async (to, from, next) => {
       this.tPrev = this.tCurrent
       this.tCurrent = from
 
@@ -516,12 +515,12 @@ export default class Auth {
     const fetchData = {
       ...this.options.fetchData,
       ...data,
-      cache: data?.cache ?? this.state.cacheUser,
+      cache: data?.cache ??( this.state.cacheUser ? "force-cache" : "default"),
     }
     const response = await this.http(fetchData)
 
     // eslint-disable-next-line functional/immutable-data
-    this.state.cacheUser = fetchData.cache ?? this.state.cacheUser
+    this.state.cacheUser =( fetchData.cache ? fetchData.cache !== "no-cache":undefined) ?? this.state.cacheUser
     setUserData(this, response.data, data?.redirect)
 
     return response
@@ -576,7 +575,7 @@ export default class Auth {
     if (loginData.fetchUser || this.options.fetchData.enabled) {
       await this.fetch({
         redirect: loginData.redirect,
-        cache: loginData.cacheUser,
+        cache: loginData.cacheUser ? "force-cache" : "default",
       })
     } else {
       setUserData(this, response.data, loginData.redirect)
@@ -631,7 +630,7 @@ export default class Auth {
     if (impersonateData.fetchUser || this.options.fetchData.enabled) {
       await this.fetch({
         redirect: impersonateData.redirect,
-        cache: impersonateData.cacheUser,
+        cache: impersonateData.cacheUser ? "force-cache" : "default",
       })
 
       return
@@ -655,7 +654,7 @@ export default class Auth {
     if (unimpersonateData.fetchUser || this.options.fetchData.enabled) {
       await this.fetch({
         redirect: unimpersonateData.redirect,
-        cache: unimpersonateData.cacheUser,
+        cache: unimpersonateData.cacheUser ? "force-cache" : "default",
       })
 
       return
