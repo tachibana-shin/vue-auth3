@@ -54,8 +54,8 @@ import { createApp } from "vue"
 import router from "./router"
 import { createAuth } from "vue-router"
 
-import driverAuthBasic from "vue-auth3/dist/drivers/auth/basic"
-import driverHttpAxios from "vue-auth3/dist/drivers/http/axios"
+import driverAuthBasic from "vue-auth3/drivers/auth/basic"
+import driverHttpAxios from "vue-auth3/drivers/http/axios"
 
 const auth = createAuth({
   plugins: {

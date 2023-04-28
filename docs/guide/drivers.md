@@ -10,8 +10,8 @@ A typical setup might look like the following.
 import { createAuth } from "vue-auth3"
 import router from "./router"
 
-import driverAuthBasic from "vue-auth3/dist/drivers/auth/basic"
-import driverHttpAxios from "vue-auth3/dist/drivers/http/axios"
+import driverAuthBasic from "vue-auth3/drivers/auth/basic"
+import driverHttpAxios from "vue-auth3/drivers/http/axios"
 // import driverOAuth2FaB from "vue-auth3/dist/oauth2/facebook"
 // import driverOAuth2Goo from "vue-auth3/dist/oauth2/google"
 
