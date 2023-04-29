@@ -572,7 +572,7 @@ export default class Auth {
 
     const response = await this.http(loginData)
 
-    if (loginData.fetchUser || this.options.fetchData.enabled) {
+    if (loginData.fetchUser && this.options.fetchData.enabled) {
       await this.fetch({
         redirect: loginData.redirect,
         cache: loginData.cacheUser ? "force-cache" : "default",
