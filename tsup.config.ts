@@ -1,12 +1,12 @@
-import { defineConfig } from "tsup"
 import { globbySync } from "globby"
+import { defineConfig } from "tsup"
 
-export default defineConfig((options) => {
+export default defineConfig(() => {
   return {
     entry: ["src/index.ts", ...globbySync("src/drivers/**/*.ts")],
     splitting: true,
-    sourcemap: options.watch,
-    minify: !options.watch,
+    sourcemap: true,
+    minify: false,
     clean: true,
     format: ["esm", "cjs"],
     dts: true,
