@@ -38,12 +38,14 @@ type Options = {
   // Http
 
   registerData?: HttpData & {
+    keyUser?: string
     autoLogin?: boolean
     fetchUser?: boolean
     staySignedIn?: boolean
     remember?: boolean
   }
   loginData?: HttpData & {
+    keyUser?: string
     fetchUser?: boolean
     staySignedIn?: boolean
     remember?: boolean
@@ -54,6 +56,7 @@ type Options = {
     makeRequest?: boolean
   }
   fetchData?: HttpData & {
+    keyUser?: string
     enabled?: boolean
     cache?: RequestCache
     enabledInBackground?: boolean

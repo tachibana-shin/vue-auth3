@@ -268,7 +268,9 @@ export default class Auth {
   constructor(options: Options) {
     this.options = extend(__defaultOption, 2, options)
 
-    this.state.cacheUser = this.options.fetchData.cache ? this.options.fetchData.cache !== "no-cache" : false 
+    this.state.cacheUser = this.options.fetchData.cache
+      ? this.options.fetchData.cache !== "no-cache"
+      : false
 
     // eslint-disable-next-line functional/no-let
     let dataWatcher: ReturnType<typeof watch> | null
@@ -511,17 +513,25 @@ export default class Auth {
 
     })
    */
-  async fetch(data?: Partial< Options["fetchData"] >) {
+  async fetch(data?: Partial<Options["fetchData"]>) {
     const fetchData = {
       ...this.options.fetchData,
       ...data,
-      cache: data?.cache ??( this.state.cacheUser ? "force-cache" : "default"),
+      cache: data?.cache ?? (this.state.cacheUser ? "force-cache" : "default"),
     }
     const response = await this.http(fetchData)
 
     // eslint-disable-next-line functional/immutable-data
-    this.state.cacheUser =( fetchData.cache ? fetchData.cache !== "no-cache":undefined) ?? this.state.cacheUser
-    setUserData(this, response.data, data?.redirect)
+    this.state.cacheUser =
+      (fetchData.cache ? fetchData.cache !== "no-cache" : undefined) ??
+      this.state.cacheUser
+
+    const keyUser = fetchData.keyUser
+    setUserData(
+      this,
+      keyUser ? response.data[keyUser] : response.data,
+      data?.redirect
+    )
 
     return response
   }
@@ -556,7 +566,15 @@ export default class Auth {
       return response
     }
 
-    routerPush(this, registerData.redirect)
+    const keyUser =
+      "keyUser" in registerData
+        ? registerData.keyUser
+        : this.options.fetchData.keyUser
+    setUserData(
+      this,
+      keyUser ? response.data[keyUser] : response.data,
+      registerData.redirect
+    )
 
     return response
   }
@@ -578,7 +596,15 @@ export default class Auth {
         cache: loginData.cacheUser ? "force-cache" : "default",
       })
     } else {
-      setUserData(this, response.data, loginData.redirect)
+      const keyUser =
+        "keyUser" in loginData
+          ? loginData.keyUser
+          : this.options.fetchData.keyUser
+      setUserData(
+        this,
+        keyUser ? response.data[keyUser] : response.data,
+        loginData.redirect
+      )
     }
 
     return response
