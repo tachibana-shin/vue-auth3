@@ -30,6 +30,7 @@ const __defaultOption = {
     method: "POST",
     redirect: "/login",
     autoLogin: false,
+    staySignedIn: true,
   },
   loginData: {
     url: "auth/login",
@@ -42,7 +43,7 @@ const __defaultOption = {
     url: "auth/logout",
     method: "POST",
     redirect: "/",
-    makeRequest: false,
+    makeRequest: true,
   },
   fetchData: {
     url: "auth/user",
