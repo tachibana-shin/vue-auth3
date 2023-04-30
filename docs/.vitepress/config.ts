@@ -46,7 +46,7 @@ function getGuideSidebar() {
     {
       text: "Introduction",
       children: [
-        { text: "What is VitePress?", link: "/introduction" },
+        { text: "What is vue-auth3?", link: "/introduction" },
         { text: "Getting Started", link: "/guide/getting-started" },
         { text: "Plugins", link: "/guide/plugins" },
         { text: "Drivers", link: "/guide/drivers" },
