@@ -236,6 +236,60 @@ function parseRedirectUri(uri = ""): string {
   return `${url}/${uri.replace(/^\/|\/$/g, "")}`
 }
 
+// eslint-disable-next-line functional/no-let
+let syning: Promise<void> | null = null
+function syncStorage(auth: Auth) {
+  if (syning) return syning
+
+  return (syning = _syncStorage(auth))
+}
+async function _syncStorage(auth: Auth) {
+  const isTokenExpired = !$token.get(auth, null)
+
+  if (isTokenExpired && auth.state.authenticated) {
+    logout(auth)
+  }
+
+  // eslint-disable-next-line functional/no-let
+  let promiseRefresh: Promise<unknown> | null = null
+  if (!isTokenExpired && !auth.state.loaded) {
+    if (auth.options.refreshToken.enabled) {
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      await auth.refresh().catch(() => {})
+    } else if (auth.options.refreshToken.enabledInBackground) {
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      promiseRefresh = auth.refresh().catch(() => {})
+    }
+  }
+
+  if (auth.state.authenticated === null && $token.get(auth, null)) {
+    const userCache = $token.get(auth, auth.options.userKey) // user data on save
+
+    if (userCache && auth.state.cacheUser) {
+      // if usercache exists and this session cacheUser active
+      setUserData(auth, userCache)
+    }
+
+    if (auth.options.fetchData.enabled && !auth.state.cacheUser) {
+      if (auth.options.fetchData.waitRefresh && promiseRefresh)
+        await promiseRefresh
+      await auth.fetch()
+    }
+
+    if (
+      !(auth.options.fetchData.enabled && !auth.state.cacheUser) &&
+      auth.options.fetchData.enabledInBackground
+    ) {
+      if (auth.options.fetchData.waitRefresh && promiseRefresh)
+        promiseRefresh.then(() => auth.fetch())
+      else void auth.fetch()
+    }
+  } else {
+    // eslint-disable-next-line functional/immutable-data
+    auth.state.loaded = true
+  }
+}
+
 export default class Auth {
   public readonly state = reactive({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -268,9 +322,7 @@ export default class Auth {
   constructor(options: Options) {
     this.options = extend(__defaultOption, 2, options)
 
-    this.state.cacheUser = this.options.fetchData.cache
-      ? this.options.fetchData.cache !== "no-cache"
-      : false
+    this.state.cacheUser = this.options.fetchData.cache ?? false
 
     // eslint-disable-next-line functional/no-let
     let dataWatcher: ReturnType<typeof watch> | null
@@ -318,45 +370,13 @@ export default class Auth {
       }, this.options.refreshToken.interval! * 1000 * 60) // In minutes.
     }
 
+    if (this.options.initSync) syncStorage(this)
+
     this.options.plugins?.router?.beforeEach(async (to, from, next) => {
       this.tPrev = this.tCurrent
       this.tCurrent = from
 
-      const isTokenExpired = !$token.get(this, null)
-
-      if (isTokenExpired && this.state.authenticated) {
-        logout(this)
-      }
-
-      if (!isTokenExpired && !this.state.loaded) {
-        if (this.options.refreshToken.enabled) {
-          // eslint-disable-next-line @typescript-eslint/no-empty-function
-          await this.refresh().catch(() => {})
-        } else if (this.options.refreshToken.enabledInBackground) {
-          // eslint-disable-next-line @typescript-eslint/no-empty-function
-          void this.refresh().catch(() => {})
-        }
-      }
-
-      if (this.state.authenticated === null && $token.get(this, null)) {
-        const userCache = $token.get(this, this.options.userKey)
-        const isUserCacheReady = userCache && this.options.fetchData.cache
-
-        if (this.options.fetchData.enabled && !isUserCacheReady) {
-          await this.fetch()
-        } else {
-          setUserData(this, isUserCacheReady ? userCache : {})
-        }
-
-        if (
-          this.options.fetchData.enabled &&
-          this.options.fetchData.enabledInBackground
-        ) {
-          void this.fetch()
-        }
-      } else {
-        this.state.loaded = true
-      }
+      await syncStorage(this)
 
       const authMeta = getAuthMeta(to)
 
@@ -517,14 +537,12 @@ export default class Auth {
     const fetchData = {
       ...this.options.fetchData,
       ...data,
-      cache: data?.cache ?? (this.state.cacheUser ? "force-cache" : "default"),
+      cache: data?.cache ?? this.state.cacheUser,
     }
     const response = await this.http(fetchData)
 
     // eslint-disable-next-line functional/immutable-data
-    this.state.cacheUser =
-      (fetchData.cache ? fetchData.cache !== "no-cache" : undefined) ??
-      this.state.cacheUser
+    this.state.cacheUser = fetchData.cache ?? this.state.cacheUser
 
     const keyUser = fetchData.keyUser
     setUserData(
@@ -593,7 +611,7 @@ export default class Auth {
     if (loginData.fetchUser && this.options.fetchData.enabled) {
       await this.fetch({
         redirect: loginData.redirect,
-        cache: loginData.cacheUser ? "force-cache" : "default",
+        cache: loginData.cacheUser,
       })
     } else {
       const keyUser =
@@ -656,7 +674,7 @@ export default class Auth {
     if (impersonateData.fetchUser || this.options.fetchData.enabled) {
       await this.fetch({
         redirect: impersonateData.redirect,
-        cache: impersonateData.cacheUser ? "force-cache" : "default",
+        cache: impersonateData.cacheUser,
       })
 
       return
@@ -680,7 +698,7 @@ export default class Auth {
     if (unimpersonateData.fetchUser || this.options.fetchData.enabled) {
       await this.fetch({
         redirect: unimpersonateData.redirect,
-        cache: unimpersonateData.cacheUser ? "force-cache" : "default",
+        cache: unimpersonateData.cacheUser,
       })
 
       return

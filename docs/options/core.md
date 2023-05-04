@@ -2,6 +2,8 @@
 
 ```ts
 type Options = {
+  initSync?: boolean
+
   //var
   rolesKey?: string
   rememberKey?: string
@@ -51,6 +53,7 @@ type Options = {
     enabled?: boolean
     cache?: boolean
     enabledInBackground?: boolean
+    waitRefresh?: boolean
   }
   refreshToken?: Omit<HttpData, "redirect"> & {
     enabled?: boolean
@@ -93,6 +96,14 @@ type Options = {
 ```
 
 The set of core options.
+
+## initSync
+
+```ts
+ @typeof boolean
+ @default 'false'
+```
+The default `vue-auth3` will not perform `auth` authentication until a router is processed which leads to inside dependencies receiving results that are not ready. this option allows `vue-auth3` to authenticate on initialization
 
 ## rolesKey
 

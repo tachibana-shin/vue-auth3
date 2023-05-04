@@ -7,7 +7,7 @@ type HttpDriver = {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     data?: any,
     headers?: Record<string, string>,
-  } & Pick<RequestInit, "cache">) => Promise<{
+  }) => Promise<{
     headers: Record<string, string>
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     data: any

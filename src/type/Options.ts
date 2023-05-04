@@ -7,11 +7,13 @@ import AuthDriver from "./drivers/AuthDriver"
 import HttpDriver from "./drivers/HttpDriver"
 import OAuth2Driver from "./drivers/OAuth2Driver"
 
-type HttpData = Partial<Parameters< HttpDriver["request"]  >[0]> & {
+type HttpData = Partial<Parameters<HttpDriver["request"]>[0]> & {
   redirect?: RouteLocationRaw
 }
 type Options = {
   //var
+  initSync?: boolean
+
   rolesKey?: string
   rememberKey?: string
   userKey?: string
@@ -58,8 +60,9 @@ type Options = {
   fetchData?: HttpData & {
     keyUser?: string
     enabled?: boolean
-    cache?: RequestCache
+    cache?: boolean
     enabledInBackground?: boolean
+    waitRefresh?: boolean
   }
   refreshToken?: Omit<HttpData, "redirect"> & {
     enabled?: boolean
