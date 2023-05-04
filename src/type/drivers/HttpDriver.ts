@@ -11,6 +11,8 @@ type HttpDriver = {
     headers: Record<string, string>
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     data: any
+    status: number
+    statusText: string
   }>
   invalidToken?: (auth: Auth, response: Awaited<ReturnType<HttpDriver["request"]>>) => boolean
 }

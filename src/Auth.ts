@@ -1,3 +1,4 @@
+import { AxiosError } from "axios"
 import { App, DeepReadonly, reactive, shallowRef, watch } from "vue"
 import {
   RouteLocationNormalized,
@@ -236,6 +237,21 @@ function parseRedirectUri(uri = ""): string {
   return `${url}/${uri.replace(/^\/|\/$/g, "")}`
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const isAxiosError = (err: any): err is AxiosError => err?.isAxiosError
+function authErrHandler(auth: Auth, err: AxiosError | Response) {
+  const status = isAxiosError(err) ? err.response?.status : err.status
+
+  if (status === 401) {
+    const isTokenExpired = !$token.get(auth, null)
+
+    if (isTokenExpired) auth.logout().catch(() => logout(auth))
+  }
+
+  // eslint-disable-next-line functional/immutable-data
+  auth.state.offline = true
+}
+
 // eslint-disable-next-line functional/no-let
 let syning: Promise<void> | null = null
 function syncStorage(auth: Auth) {
@@ -254,11 +270,9 @@ async function _syncStorage(auth: Auth) {
   let promiseRefresh: Promise<unknown> | null = null
   if (!isTokenExpired && !auth.state.loaded) {
     if (auth.options.refreshToken.enabled) {
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
-      await auth.refresh().catch(() => {})
+      await auth.refresh().catch((err) => authErrHandler(auth, err))
     } else if (auth.options.refreshToken.enabledInBackground) {
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
-      promiseRefresh = auth.refresh().catch(() => {})
+      promiseRefresh = auth.refresh().catch((err) => authErrHandler(auth, err))
     }
   }
 
@@ -273,7 +287,7 @@ async function _syncStorage(auth: Auth) {
     if (auth.options.fetchData.enabled && !auth.state.cacheUser) {
       if (auth.options.fetchData.waitRefresh && promiseRefresh)
         await promiseRefresh
-      await auth.fetch()
+      await auth.fetch().catch((err) => authErrHandler(auth, err))
     }
 
     if (
@@ -281,10 +295,13 @@ async function _syncStorage(auth: Auth) {
       auth.options.fetchData.enabledInBackground
     ) {
       if (auth.options.fetchData.waitRefresh && promiseRefresh)
-        promiseRefresh.then(() => auth.fetch())
-      else void auth.fetch()
+        promiseRefresh.then(() =>
+          auth.fetch().catch((err) => authErrHandler(auth, err))
+        )
+      else void auth.fetch().catch((err) => authErrHandler(auth, err))
     }
   } else {
+    $token.remove(auth, auth.options.userKey)
     // eslint-disable-next-line functional/immutable-data
     auth.state.loaded = true
   }
@@ -295,6 +312,7 @@ export default class Auth {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     data: <any | null>null,
     loaded: false,
+    offline: false,
     authenticated: <boolean | null>null, // TODO: false ?
     impersonating: <boolean | null>null,
     remember: <boolean | null>null,
@@ -334,7 +352,8 @@ export default class Auth {
           dataWatcher = watch(
             () => this.state.data,
             (data) => {
-              $token.set(this, this.options.userKey, data, false)
+              if (this.token())
+                $token.set(this, this.options.userKey, data, false)
             },
             {
               deep: true,
@@ -364,7 +383,7 @@ export default class Auth {
             this.options.refreshToken.enabledInBackground) &&
           !!$token.get(this, null)
         ) {
-          this.refresh()
+          this.refresh().catch((err) => authErrHandler(this, err))
         }
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       }, this.options.refreshToken.interval! * 1000 * 60) // In minutes.
@@ -480,6 +499,9 @@ export default class Auth {
     }
 
     return this.state.data
+  }
+  offline() {
+    return this.state.offline
   }
 
   check(role?: Roles, key: string = this.options.rolesKey) {
