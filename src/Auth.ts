@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-types */
 import { AxiosError } from "axios"
 import { App, DeepReadonly, reactive, shallowRef, watch } from "vue"
 import {
@@ -410,11 +411,12 @@ export default class Auth {
     })
   }
 
-  async http(
-    options: Parameters<HttpDriver["request"]>[0] & {
-      ignoreVueAuth?: boolean
-      impersonating?: boolean
-    }
+  async http<OtherOptions extends object>(
+    options: OtherOptions &
+      Parameters<HttpDriver["request"]>[0] & {
+        ignoreVueAuth?: boolean
+        impersonating?: boolean
+      }
   ) {
     if (!options.ignoreVueAuth) {
       // eslint-disable-next-line functional/no-let
@@ -492,7 +494,6 @@ export default class Auth {
     return this._redirect.value
   }
 
-  // eslint-disable-next-line @typescript-eslint/ban-types
   user<U extends object>(data?: U): U | null {
     if (data !== undefined) {
       setUserData(this, data)
@@ -555,7 +556,9 @@ export default class Auth {
 
     })
    */
-  async fetch(data?: Partial<Options["fetchData"]>) {
+  async fetch<OtherOptions extends object>(
+    data?: OtherOptions & Partial<Options["fetchData"]>
+  ) {
     const fetchData = {
       ...this.options.fetchData,
       ...data,
@@ -580,14 +583,18 @@ export default class Auth {
    * @request auth/refresh
    * @returns Promise exists token refresh in Authorizer
    */
-  public refresh(data?: Required<Options>["refreshToken"]) {
+  public refresh<OtherOptions extends object>(
+    data?: OtherOptions & Required<Options>["refreshToken"]
+  ) {
     return this.http({
       ...this.options.refreshToken,
       ...(data || {}),
     })
   }
 
-  async register(data?: Required<Options>["registerData"]) {
+  async register<OtherOptions extends object>(
+    data?: OtherOptions & Required<Options>["registerData"]
+  ) {
     const registerData = {
       ...this.options.registerData,
       ...data,
@@ -619,7 +626,9 @@ export default class Auth {
     return response
   }
 
-  async login(data?: Required<Options>["loginData"]) {
+  async login<OtherOptions extends object>(
+    data?: OtherOptions & Required<Options>["loginData"]
+  ) {
     const loginData = {
       ...this.options.loginData,
       ...data,
@@ -669,7 +678,9 @@ export default class Auth {
     setRemember(this, void 0)
   }
 
-  async logout(data?: Required<Options>["logoutData"]) {
+  async logout<OtherOptions extends object>(
+    data?: OtherOptions & Required<Options>["logoutData"]
+  ) {
     const logoutData = {
       ...this.options.logoutData,
       ...data,
@@ -682,7 +693,9 @@ export default class Auth {
     logout(this, logoutData.redirect)
   }
 
-  async impersonate(data?: Required<Options>["impersonateData"]) {
+  async impersonate<OtherOptions extends object>(
+    data?: OtherOptions & Required<Options>["impersonateData"]
+  ) {
     const impersonateData = {
       ...this.options.impersonateData,
       ...data,
@@ -705,7 +718,9 @@ export default class Auth {
     routerPush(this, impersonateData.redirect)
   }
 
-  async unimpersonate(data?: Required<Options>["unimpersonateData"]) {
+  async unimpersonate<OtherOptions extends object>(
+    data?: OtherOptions & Required<Options>["unimpersonateData"]
+  ) {
     const unimpersonateData = {
       ...this.options.unimpersonateData,
       ...data,
