@@ -1,4 +1,5 @@
 import Auth from "../Auth"
+import Options from "../type/Options"
 
 function setCookie<T>(
   auth: Auth,
@@ -7,12 +8,13 @@ function setCookie<T>(
   expires: boolean,
   time?: number
 ): void {
-  const options = auth.options.cookie
+  const options = (auth.options as unknown as Options).cookie
 
   // eslint-disable-next-line functional/no-let
   let cookie = `${key}=${JSON.stringify(value)};`
 
-  for (const [prop, val] of Object.entries(options)) {
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  for (const [prop, val] of Object.entries(options!)) {
     // eslint-disable-next-line functional/no-let
     let value = typeof val === "function" ? val() : val
 

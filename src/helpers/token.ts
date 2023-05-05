@@ -1,4 +1,5 @@
 import Auth from "../Auth"
+import Options from "../type/Options"
 import { isCookieStorage, isLocalStorage, isSessionStorage } from "../utils"
 
 import cookie from "./cookie"
@@ -23,7 +24,8 @@ function get<T>(auth: Auth, key: string | null): T | null {
 
   // eslint-disable-next-line functional/no-let
   for (let i = 0; i < auth.options.stores.length; i++) {
-    const store = auth.options.stores[i]
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const store = (auth.options as unknown as Options).stores![i]
     // eslint-disable-next-line functional/no-let
     let val
 
@@ -53,7 +55,8 @@ function set<T>(
   const keyI = getTokenKey(key, auth)
   // eslint-disable-next-line functional/no-let
   for (let i = 0; i < auth.options.stores.length; i++) {
-    const store = auth.options.stores[i]
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const store = (auth.options as unknown as Options).stores![i]
 
     if (typeof store === "object") {
       store.set(keyI, value, expires, auth)
@@ -70,7 +73,8 @@ function set<T>(
 function remove(auth: Auth, key: string | null) {
   // eslint-disable-next-line functional/no-let
   for (let i = 0; i < auth.options.stores.length; i++) {
-    const store = auth.options.stores[i]
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const store = (auth.options as unknown as Options).stores![i]
     const keyI = getTokenKey(key, auth)
 
     if (typeof store === "object") {
