@@ -285,7 +285,7 @@ async function _syncStorage(auth: Auth) {
       setUserData(auth, userCache)
     }
 
-    if (auth.options.fetchData.enabled && !auth.state.cacheUser) {
+    if (auth.options.fetchData.enabled) {
       // eslint-disable-next-line functional/no-let
       let fetchPromise: Promise<unknown> | null = null
       if (auth.options.fetchData.waitRefresh && promiseRefresh)
