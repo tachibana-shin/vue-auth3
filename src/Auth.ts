@@ -271,9 +271,9 @@ async function _syncStorage(auth: Auth) {
   let promiseRefresh: Promise<unknown> | null = null
   if (!isTokenExpired && !auth.state.loaded) {
     if (auth.options.refreshToken.enabled) {
-      await auth.refresh().catch((err) => authErrHandler(auth, err))
-    } else if (auth.options.refreshToken.enabledInBackground) {
       promiseRefresh = auth.refresh().catch((err) => authErrHandler(auth, err))
+
+      if (!auth.options.refreshToken.enabledInBackground) await promiseRefresh
     }
   }
 
@@ -286,20 +286,15 @@ async function _syncStorage(auth: Auth) {
     }
 
     if (auth.options.fetchData.enabled && !auth.state.cacheUser) {
+      // eslint-disable-next-line functional/no-let
+      let fetchPromise: Promise<unknown> | null = null
       if (auth.options.fetchData.waitRefresh && promiseRefresh)
-        await promiseRefresh
-      await auth.fetch().catch((err) => authErrHandler(auth, err))
-    }
-
-    if (
-      !(auth.options.fetchData.enabled && !auth.state.cacheUser) &&
-      auth.options.fetchData.enabledInBackground
-    ) {
-      if (auth.options.fetchData.waitRefresh && promiseRefresh)
-        promiseRefresh.then(() =>
+        fetchPromise = promiseRefresh.then(() =>
           auth.fetch().catch((err) => authErrHandler(auth, err))
         )
-      else void auth.fetch().catch((err) => authErrHandler(auth, err))
+      else fetchPromise = auth.fetch().catch((err) => authErrHandler(auth, err))
+
+      if (!auth.options.fetchData.enabledInBackground) await fetchPromise
     }
   } else {
     $token.remove(auth, auth.options.userKey)
