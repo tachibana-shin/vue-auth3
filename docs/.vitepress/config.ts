@@ -65,7 +65,7 @@ function getGuideSidebar() {
         { text: "User Data", link: "/methods/user-data" },
         { text: "Login & Register", link: "/methods/register-and-login" },
         { text: "Impersonating", link: "/methods/impersonating" },
-        { text: "Uttils", link: "/methods/utils" },
+        { text: "Utils", link: "/methods/utils" },
       ],
     },
     {
