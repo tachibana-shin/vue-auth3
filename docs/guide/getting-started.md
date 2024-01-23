@@ -67,7 +67,9 @@ const auth = createAuth({
   },
 })
 
-createAuth().use(router).use(auth).mount("#app")
+const app = createApp(App)
+
+app.use(router).use(auth).mount("#app")
 ```
 
 By calling `app.use(auth)`, By default, we can access the VueAuth3 instance from each component with `this.$auth`, which can be referenced from the `global` property of i18n instance that created with `createAuth`. As well as, auth API such as `this.$auth` is also injected into each component, so these API can be used with templates.
