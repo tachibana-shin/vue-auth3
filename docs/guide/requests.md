@@ -1,4 +1,4 @@
-How requests are made is central to the vue-auth plugin so it's important to understand the request/response lifecycle.
+How requests are made is central to the vue-auth3 plugin so it's important to understand the request/response lifecycle.
 
 Under the hood the, all requests to the API are made using the HTTP driver and all of the methods will always return a `Promise` by `axios`.
 
@@ -36,7 +36,7 @@ The request intercept fires and checks if a token is set. If set it will pass ex
 
 ### 3. Response Returned
 
-The HTTP plugin used in the app should receive a response. If this call was initiated by the vue-auth plugin this would continue to be routed via the HTTP driver.
+The HTTP plugin used in the app should receive a response. If this call was initiated by the vue-auth3 plugin this would continue to be routed via the HTTP driver.
 
 ### 4. Response Processing
 
@@ -44,7 +44,7 @@ The response intercept will fire and attempt to parse a token if set. If set it 
 
 ### 5. Make Additional Calls
 
-If we are making requests through a method in the vue-auth plugin there may be additional calls made. For instance with the login call we may fire a subsequent `fetch` call. If this is a regular app call this step is omitted.
+If we are making requests through a method in the vue-auth3 plugin there may be additional calls made. For instance with the login call we may fire a subsequent `fetch` call. If this is a regular app call this step is omitted.
 
 ### 6. Resolve Promise
 
@@ -52,7 +52,7 @@ Finally after all calls are made the promise will resolve and return control bac
 
 ## Examples
 
-Let's take a look at a few examples for some of the more commonly used vue-auth plugin methods.
+Let's take a look at a few examples for some of the more commonly used vue-auth3 plugin methods.
 
 ### Login
 
