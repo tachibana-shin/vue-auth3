@@ -1,6 +1,6 @@
 How requests are made is central to the vue-auth plugin so it's important to understand the request/response lifecycle.
 
-Under the hood the, all requests to the API are made using the HTTP driver and all of the methods will always return a `Promise` by `axios`.
+Under the hood, all requests to the API are made using the HTTP driver and all of the methods will always return a `Promise` by `axios`.
 
 For more details on individual method options check the [Options Guide](/options/core) and [Methods Guide](/methods/overview).
 
