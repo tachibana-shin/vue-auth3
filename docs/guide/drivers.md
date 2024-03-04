@@ -12,8 +12,8 @@ import router from "./router"
 
 import driverAuthBasic from "vue-auth3/drivers/auth/basic"
 import driverHttpAxios from "vue-auth3/drivers/http/axios"
-// import driverOAuth2FaB from "vue-auth3/dist/oauth2/facebook"
-// import driverOAuth2Goo from "vue-auth3/dist/oauth2/google"
+// import driverOAuth2FaB from "vue-auth3/driver/oauth2/facebook"
+// import driverOAuth2Goo from "vue-auth3/driver/oauth2/google"
 
 const auth = createAuth({
   plugins: {
