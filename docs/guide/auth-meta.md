@@ -2,7 +2,7 @@
 To use this feature you need to [install the router plugin](/guide/plugins.html#router-plugin)
 :::
 
-First thing to point out is that the `auth.check()` method and the `meta.auth` checks use the exact same compare logic when doing their respective checks. However, we'll see that the `auth.meta` checks also have some specific route redirect logic based on the value set.
+First thing to point out is that the `auth.check()` method and the `meta.auth` checks use the exact same compare logic when doing their respective checks. However, we'll see that the `meta.auth` checks also have some specific route redirect logic based on the value set.
 
 > This guide assumes we are using the defacto `vue-router` plugin.
 
