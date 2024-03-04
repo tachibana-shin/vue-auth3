@@ -52,7 +52,7 @@ A special `$auth.ready()` Method has been created for this specific case.
 ```ts
 import { createApp } from "vue"
 import router from "./router"
-import { createAuth } from "vue-router"
+import { createAuth } from "vue-auth3"
 
 import driverAuthBasic from "vue-auth3/drivers/auth/basic"
 import driverHttpAxios from "vue-auth3/drivers/http/axios"
