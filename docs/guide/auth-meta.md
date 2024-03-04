@@ -1,4 +1,4 @@
-:::info Requireed
+:::info Required
 To use this feature you need to [install the router plugin](/guide/plugins.html#router-plugin)
 :::
 
