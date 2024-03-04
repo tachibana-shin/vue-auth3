@@ -87,6 +87,7 @@ Although using axios, its only effect is to send requests. I don't inject code i
 #### Available Drivers:
 
 - [axios.ts](https://github.com/tachibana-shin/vue-auth3/blob/master/src/drivers/http/axios.ts)
+- [fetch](https://github.com/tachibana-shin/vue-auth3/blob/master/src/drivers/http/fetch.ts)
 
 ## Router Drivers [Deleted!]
 
