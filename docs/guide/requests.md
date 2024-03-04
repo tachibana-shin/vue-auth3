@@ -1,4 +1,4 @@
-How requests are made is central to the vue-auth plugin so it's important to understand the request/response lifecycle.
+How requests are made is central to the vue-auth3 plugin so it's important to understand the request/response lifecycle.
 
 Under the hood the, all requests to the API are made using the HTTP driver and all of the methods will always return a `Promise` by `axios`.
 
