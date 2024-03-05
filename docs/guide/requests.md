@@ -11,9 +11,9 @@ These will always fire off a request.
 - [auth.register()](/methods/register-and-login#register)
 - [auth.login()](/methods/register-and-login#login)
 - [auth.oauth2()](/methods/register-and-login#oauth2)
-- [auth.fetch()](/methods/register-and-login#fetch)
-- [auth.refresh()](/methods/register-and-login#refresh)
-- [auth.impersonate()](/methods/register-and-login#impersonate)
+- [auth.fetch()](/methods/user-data.html#fetch)
+- [auth.refresh()](/methods/utils.html#refresh)
+- [auth.impersonate()](/methods/impersonating.html#impersonate)
 
 ## Request Methods (Optional)
 
