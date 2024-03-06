@@ -6,7 +6,7 @@ With this setup there are some default minimum values for the cookies. But any o
 
 ## Values
 
-By default values ​​stored in `stores` including `cookie` will be coerced to `string` by `JSON.stringify
+By default values ​​stored in `stores` including `cookie` will be coerced to `string` by `JSON.stringify`
 
 ## Expires Key
 
