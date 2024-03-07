@@ -278,19 +278,19 @@ This will trigger if `auth.meta` is set to false and the user is already authent
 ## registerData
 
 ```ts
- @typeof  AxiosRequestConfig & {
+@typeof  AxiosRequestConfig & {
   redirect?: RouteLocationRaw
-    autoLogin?: boolean
-    fetchUser?: boolean
-    staySignedIn?: boolean
-    remember?: boolean
-  };
- @default {
-    url: "auth/register",
-    method: "POST",
-    redirect: "/login",
-    autoLogin: false,
-  }
+  autoLogin?: boolean
+  fetchUser?: boolean
+  staySignedIn?: boolean
+  remember?: boolean
+};
+@default {
+  url: "auth/register",
+  method: "POST",
+  redirect: "/login",
+  autoLogin: false,
+}
 ```
 
 Default register request data.
