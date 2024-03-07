@@ -19,7 +19,7 @@ function register() {
       password: "abcd1234",
     },
     redirect: { name: "user-account" },
-    remember: "Rob",
+    remember: true,
     staySignedIn: true,
     autoLogin: true,
     fetchUser: true,
