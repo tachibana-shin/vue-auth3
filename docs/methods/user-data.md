@@ -18,7 +18,7 @@ const user = computed<{
   first_name: string
   last_name: string
 } | null>(() => {
-  return this.$auth.user() || {}
+  return auth.user() || {}
 })
 
 function update() {
