@@ -10,7 +10,7 @@ By default values ​​stored in `stores` including `cookie` will be coerced to
 
 ## Expires Key
 
-There is one special built in case with the `cookiee.xpires` value. The correct value for this is a date string. However, there is a built in check for a non string integer offset value that will automatically convert to a date. This is to simplify things with a simple offset.
+There is one special built in case with the `cookie.expires` value. The correct value for this is a date string. However, there is a built in check for a non string integer offset value that will automatically convert to a date. This is to simplify things with a simple offset.
 
 ### Example
 
