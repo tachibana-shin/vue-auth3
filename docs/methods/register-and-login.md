@@ -87,23 +87,22 @@ The initial request to FB, Google, etc.
 <script lang="ts" setup>
 const auth = useAuth()
 
-        function oauth2() {
-           auth
-                .oauth2({
-                    params: {
-                        client_id: 'FACEBOOK_CLIENT_ID'
-                        ...
-                    },
-                    remember: 'Rob',
-                    staySignedIn: true,
-                    fetchUser: true,
-                    window: {
-                        name: '_blank',
-                        specs: {},
-                        replace: false
-                    }
-                });
-        }
+function oauth2() {
+  auth.oauth2({
+    params: {
+      client_id: 'FACEBOOK_CLIENT_ID'
+      ...
+    },
+    remember: true,
+    staySignedIn: true,
+    fetchUser: true,
+    window: {
+      name: '_blank',
+      specs: {},
+      replace: false
+    }
+  });
+}
 </script>
 ```
 
