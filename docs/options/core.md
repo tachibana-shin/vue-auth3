@@ -326,20 +326,20 @@ Meaning does it expire after the browser is closed or not.
 ## loginData
 
 ```ts
- @typeof  AxiosRequestConfig & {
+@typeof  AxiosRequestConfig & {
   redirect?: RouteLocationRaw
-    fetchUser?: boolean
-    staySignedIn?: boolean
-    remember?: boolean
-    cacheUser?: boolean
-  }
- @default{
-    url: "auth/login",
-    method: "POST",
-    redirect: "/",
-    fetchUser: true,
-    staySignedIn: true,
-  }
+  fetchUser?: boolean
+  staySignedIn?: boolean
+  remember?: boolean
+  cacheUser?: boolean
+}
+@default{
+  url: "auth/login",
+  method: "POST",
+  redirect: "/",
+  fetchUser: true,
+  staySignedIn: true,
+}
 ```
 
 Default login request data.
