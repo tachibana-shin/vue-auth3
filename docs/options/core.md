@@ -463,17 +463,17 @@ This is used primarily to keep token alive while a user is active on the app.
 ## impersonateData
 
 ```ts
- @typeof  AxiosRequestConfig & {
+@typeof  AxiosRequestConfig & {
   redirect?: RouteLocationRaw
-    fetchUser?: boolean
-    cacheUser?: boolean
-  }
- @default {
-    url: "auth/impersonate",
-    method: "POST",
-    redirect: "/",
-    fetchUser: true,
-  },
+  fetchUser?: boolean
+  cacheUser?: boolean
+}
+@default {
+  url: "auth/impersonate",
+  method: "POST",
+  redirect: "/",
+  fetchUser: true,
+},
 ```
 
 Default impersonate request data.
