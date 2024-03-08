@@ -404,17 +404,17 @@ Default oauth2 request data.
 - [fetchUser Option](/options/options-generate#fetchuser)
 
 ```ts
- @typeof  AxiosRequestConfig & {
+@typeof  AxiosRequestConfig & {
   redirect?: RouteLocationRaw
-    enabled?: boolean
-    cache?: boolean
-    enabledInBackground?: boolean
-  }
- @default{
-    url: "auth/user",
-    method: "GET",
-    enabled: true,
-  },
+  enabled?: boolean
+  cache?: boolean
+  enabledInBackground?: boolean
+}
+@default{
+  url: "auth/user",
+  method: "GET",
+  enabled: true,
+},
 ```
 
 Default fetch request data.
