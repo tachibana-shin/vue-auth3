@@ -487,19 +487,19 @@ Default impersonate request data.
 ## unimpersonateData
 
 ```ts
- @typeof  AxiosRequestConfig & {
+@typeof  AxiosRequestConfig & {
   redirect?: RouteLocationRaw
-    fetchUser?: boolean
-    makeRequest?: boolean
-    cacheUser?: boolean
-  }
- @default {
-    url: "auth/unimpersonate",
-    method: "POST",
-    redirect: "/admin",
-    fetchUser: true,
-    makeRequest: false,
-  },
+  fetchUser?: boolean
+  makeRequest?: boolean
+  cacheUser?: boolean
+}
+@default {
+  url: "auth/unimpersonate",
+  method: "POST",
+  redirect: "/admin",
+  fetchUser: true,
+  makeRequest: false,
+},
 ```
 
 Default unimpersonate request data.
