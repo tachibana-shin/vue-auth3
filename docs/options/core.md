@@ -403,6 +403,8 @@ Default oauth2 request data.
 - [redirect Option](/options/options-generate#redirect)
 - [fetchUser Option](/options/options-generate#fetchuser)
 
+## fetchData
+
 ```ts
  @typeof  AxiosRequestConfig & {
   redirect?: RouteLocationRaw
