@@ -429,17 +429,17 @@ Default fetch request data.
 ## refreshToken
 
 ```ts
- @typeof AxiosRequestConfig & {
-    enabled?: boolean
-    enabledInBackground?: boolean
-    interval?: number | false
-  }
- @default{
-    url: "auth/refresh",
-    method: "GET",
-    enabled: true,
-    interval: 30,
-  },
+@typeof AxiosRequestConfig & {
+  enabled?: boolean
+  enabledInBackground?: boolean
+  interval?: number | false
+}
+@default{
+  url: "auth/refresh",
+  method: "GET",
+  enabled: true,
+  interval: 30,
+},
 ```
 
 Default refresh request data.
