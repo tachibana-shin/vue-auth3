@@ -24,7 +24,7 @@ For instance after login or oauth2 requests.
 
 Specify a bit of string data to remember during login or register.
 
-This is a dynamic opiton that should be set during the method call.
+This is a dynamic option that should be set during the method call.
 
 ## makeRequest
 
