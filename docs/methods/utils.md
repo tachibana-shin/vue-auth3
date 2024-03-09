@@ -66,7 +66,7 @@ auth.redirect() => {
 
 Returns redirect caused by the vue-auth plugin.
 
-This includes a status code to indicate what caused the redirect. This is useful for cased where a login redirect has occurred or even for debugging.
+This includes a status code to indicate what caused the redirect. This is useful for cases where a login redirect has occurred or even for debugging.
 
 #### Examples
 
@@ -75,16 +75,16 @@ This includes a status code to indicate what caused the redirect. This is useful
 const auth = useAuth()
 
 function login() {
-            const redirect =auth.redirect();
+  const redirect = auth.redirect();
 
-         auth
-                .login({
-                    ...
-                    redirect: {
-                        name: redirect ? redirect.from.name : 'user-account'
-                    }
-                });
-        }
+  auth
+    .login({
+      ...
+      redirect: {
+        name: redirect ? redirect.from.name : 'user-account'
+      }
+    });
+}
 </script>
 ```
 
