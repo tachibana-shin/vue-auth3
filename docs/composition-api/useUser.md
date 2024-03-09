@@ -1,6 +1,6 @@
-## useAuth
+## useUser
 ```ts
-const user = useAuth<UserData>()
+const user = useUser<UserData>()
 
 console.log(user.value)
 ```
