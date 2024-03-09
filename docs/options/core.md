@@ -379,16 +379,16 @@ Default logout request data.
 ## oauth2Data
 
 ```ts
- @typeof  AxiosRequestConfig & {
+@typeof  AxiosRequestConfig & {
   redirect?: RouteLocationRaw
-    fetchUser?: true
-  }
- @default {
-    url: "auth/social",
-    method: "POST",
-    redirect: "/",
-    fetchUser: true,
-  },
+  fetchUser?: true
+}
+@default {
+  url: "auth/social",
+  method: "POST",
+  redirect: "/",
+  fetchUser: true,
+},
 ```
 
 Default oauth2 request data.
