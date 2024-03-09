@@ -22,7 +22,7 @@ For instance after login or oauth2 requests.
 @typeof boolean;
 ```
 
-Specify a bit of string data to remember during login or register.
+Specify whether the information will be stored the next time it is accessed.
 
 This is a dynamic option that should be set during the method call.
 
