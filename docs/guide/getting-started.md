@@ -7,7 +7,7 @@ Also, all examples will be using the full version of Vue to make on-the-fly temp
 :::
 
 :::warning `$auth`
-ince the following pages of instructions I will use `composition/api`. `$auth` is still backward compatible from [@websanova/vue-auth](https://npmjs.org/package/@websanova/vue-auth) but it is deprecated
+In the following pages of instructions I will use `composition/api`. `$auth` is still backward compatible from [@websanova/vue-auth](https://npmjs.org/package/@websanova/vue-auth) but it is deprecated
 :::
 
 Creating a global application with Vue + Vue Auth 3 is very simple. With Vue.js, we composed our app with components. When we add Vue Auth 3 to the mix, all we need to do is get resource notification ready and simply use the auth API provided by vue-auth3.
