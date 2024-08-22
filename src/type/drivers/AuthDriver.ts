@@ -12,8 +12,7 @@ type AuthDriver = {
   response: (auth: Auth, response: Awaited<ReturnType<HttpDriver["request"]>>) => string | null;
 };
 
-export const defineAuthDriver = (opts: AuthDriver): AuthDriver => {
-  return opts;
-};
-
-export default AuthDriver;
+export default AuthDriver
+export function defineAuthDriver(opts: AuthDriver) {
+  return opts
+}
