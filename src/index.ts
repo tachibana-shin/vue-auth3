@@ -24,13 +24,16 @@ export function useUser<User extends object>(
   })
 }
 
+export {
+  defineAuthDriver,
+  defineHttpDriver,
+  defineOAuth2Driver,
+}
+
 export type {
   Options,
   Auth,
   AuthDriver,
   HttpDriver,
   OAuth2Driver,
-  defineAuthDriver,
-  defineHttpDriver,
-  defineOAuth2Driver,
 }
