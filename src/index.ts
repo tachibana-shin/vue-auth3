@@ -28,7 +28,7 @@ export {
   defineAuthDriver,
   defineHttpDriver,
   defineOAuth2Driver,
-};
+}
 
 export type {
   Options,
