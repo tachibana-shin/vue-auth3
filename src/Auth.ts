@@ -567,7 +567,7 @@ export default class Auth {
     const keyUser = fetchData.keyUser
     setUserData(
       this,
-      keyUser ? response.data[keyUser] : response.data,
+      keyUser ? getProperty(response.data, keyUser) : response.data,
       data?.redirect
     )
 
@@ -614,7 +614,7 @@ export default class Auth {
         : this.options.fetchData.keyUser
     setUserData(
       this,
-      keyUser ? response.data[keyUser] : response.data,
+      keyUser ? getProperty(response.data, keyUser) : response.data,
       registerData.redirect
     )
 
@@ -646,7 +646,7 @@ export default class Auth {
           : this.options.fetchData.keyUser
       setUserData(
         this,
-        keyUser ? response.data[keyUser] : response.data,
+        keyUser ? getProperty(response.data, keyUser) : response.data,
         loginData.redirect
       )
     }
