@@ -298,7 +298,7 @@ Default register request data.
 
 > If the `autoLogin` is enabled it will subsequently trigger a login call. All options available to the login method will also be available here.
 
-> The `keyUser` option supports dot notation, allowing you to specify nested properties within the user object.
+> The `keyUser` option supports dot notation, allowing you to specify nested properties within the user object. For example, if the response object is structured as `{ user: { profile: { name: 'John' } } }`, you can set `keyUser` to `user.profile.name` to access the `name` property directly.
 
 #### References
 
@@ -348,7 +348,7 @@ Meaning does it expire after the browser is closed or not.
 
 Default login request data.
 
-> The `keyUser` option supports dot notation, allowing you to specify nested properties within the user object.
+> The `keyUser` option supports dot notation, allowing you to specify nested properties within the user object. For example, if the response object is structured as `{ user: { details: { email: 'john@example.com' } } }`, you can set `keyUser` to `user.details.email` to access the `email` property directly.
 
 #### References
 
@@ -428,7 +428,7 @@ Default oauth2 request data.
 
 Default fetch request data.
 
-> The `keyUser` option supports dot notation, allowing you to specify nested properties within the user object.
+> The `keyUser` option supports dot notation, allowing you to specify nested properties within the user object. For example, if the response object is structured as `{ data: { user: { id: 123 } } }`, you can set `keyUser` to `data.user.id` to access the `id` property directly.
 
 #### References
 
