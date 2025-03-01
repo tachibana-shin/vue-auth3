@@ -2119,7 +2119,7 @@ packages:
     dev: true
 
   /clone-response@1.0.2:
-    resolution: {integrity: sha1-0dyXOSAxTfZ/vrlCI7TuNQI56Ws=}
+    resolution: {integrity: sha512-yjLXh88P599UOyPTFX0POsd7WxnbsVsGohcwzHOLspIhhpalPw1BcqED8NblyZLKcGrL8dTgMlcaZxV2jAD41Q==}
     dependencies:
       mimic-response: 1.0.1
     dev: true
@@ -3659,8 +3659,8 @@ packages:
       slash: 4.0.0
     dev: true
 
-  /got@11.8.3:
-    resolution: {integrity: sha512-7gtQ5KiPh1RtGS9/Jbv1ofDpBFuq42gyfEib+ejaRBJuj/3tQFeR5+gw57e4ipaU8c/rCjvX6fkQz2lyDlGAOg==}
+  /got@11.8.6:
+    resolution: {integrity: sha512-6tfZ91bOr7bOXnK7PRDCGBLa1H4U080YHNaAQ2KsMGlLEzRbk44nsZF2E1IeRc3vtJHPVbKCYgdFbaGO2ljd8g==}
     engines: {node: '>=10.19.0'}
     dependencies:
       '@sindresorhus/is': 4.6.0
@@ -6248,7 +6248,7 @@ packages:
   /vue-resource@1.5.3:
     resolution: {integrity: sha512-REhTuEuYSpwmEH/VN4fgDQVC/VXxDK/xsguuiDPnINxOwy1s0CSu//p++osTUkiAXi6d/vptwBpb0AcBIDsXzw==}
     dependencies:
-      got: 11.8.3
+      got: 11.8.6
     dev: true
 
   /vue-router@4.0.15(vue@3.2.33):
