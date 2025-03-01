@@ -428,7 +428,8 @@ Default oauth2 request data.
 
 Default fetch request data.
 
-> The `keyUser` option supports dot notation, allowing you to specify nested properties within the user object.
+> The `keyUser` option now supports dot notation, allowing you to specify nested keys within the user object. For example, if your user object is structured as `{ profile: { details: { name: 'John' } } }`, you can use `keyUser: 'profile.details.name'` to access the name.
+
 
 #### References
 
