@@ -280,6 +280,7 @@ This will trigger if `auth.meta` is set to false and the user is already authent
 ```ts
 @typeof  AxiosRequestConfig & {
   redirect?: RouteLocationRaw
+  keyUser?: string
   autoLogin?: boolean
   fetchUser?: boolean
   staySignedIn?: boolean
@@ -296,6 +297,8 @@ This will trigger if `auth.meta` is set to false and the user is already authent
 Default register request data.
 
 > If the `autoLogin` is enabled it will subsequently trigger a login call. All options available to the login method will also be available here.
+
+> The `keyUser` option supports dot notation, allowing you to specify nested properties within the user object.
 
 #### References
 
@@ -328,6 +331,7 @@ Meaning does it expire after the browser is closed or not.
 ```ts
 @typeof  AxiosRequestConfig & {
   redirect?: RouteLocationRaw
+  keyUser?: string
   fetchUser?: boolean
   staySignedIn?: boolean
   remember?: boolean
@@ -343,6 +347,8 @@ Meaning does it expire after the browser is closed or not.
 ```
 
 Default login request data.
+
+> The `keyUser` option supports dot notation, allowing you to specify nested properties within the user object.
 
 #### References
 
@@ -408,6 +414,7 @@ Default oauth2 request data.
 ```ts
 @typeof  AxiosRequestConfig & {
   redirect?: RouteLocationRaw
+  keyUser?: string
   enabled?: boolean
   cache?: boolean
   enabledInBackground?: boolean
@@ -422,6 +429,7 @@ Default oauth2 request data.
 Default fetch request data.
 
 > The `keyUser` option now supports dot notation, allowing you to specify nested keys within the user object. For example, if your user object is structured as `{ profile: { details: { name: 'John' } } }`, you can use `keyUser: 'profile.details.name'` to access the name.
+
 
 #### References
 
