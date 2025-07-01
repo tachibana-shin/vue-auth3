@@ -13,8 +13,47 @@
       "require": "./dist/index.js",
       "types": "./dist/index.d.ts"
     },
-    "./drivers/": "./dist/drivers/",
-    "./dist/": "./dist/"
+    "./dist/": "./dist/",
+    "./drivers/auth/basic": {
+      "import": "./dist/drivers/auth/basic.mjs",
+      "require": "./dist/drivers/auth/basic.js",
+      "types": "./dist/drivers/auth/basic.d.ts"
+    },
+    "./drivers/auth/bearer-token": {
+      "import": "./dist/drivers/auth/bearer-token.mjs",
+      "require": "./dist/drivers/auth/bearer-token.js",
+      "types": "./dist/drivers/auth/bearer-token.d.ts"
+    },
+    "./drivers/auth/bearer": {
+      "import": "./dist/drivers/auth/bearer.mjs",
+      "require": "./dist/drivers/auth/bearer.js",
+      "types": "./dist/drivers/auth/bearer.d.ts"
+    },
+    "./drivers/auth/devise": {
+      "import": "./dist/drivers/auth/devise.mjs",
+      "require": "./dist/drivers/auth/devise.js",
+      "types": "./dist/drivers/auth/devise.d.ts"
+    },
+    "./drivers/http/axios": {
+      "import": "./dist/drivers/http/axios.mjs",
+      "require": "./dist/drivers/http/axios.js",
+      "types": "./dist/drivers/http/axios.d.ts"
+    },
+    "./drivers/http/fetch": {
+      "import": "./dist/drivers/http/fetch.mjs",
+      "require": "./dist/drivers/http/fetch.js",
+      "types": "./dist/drivers/http/fetch.d.ts"
+    },
+    "./drivers/oauth2/facebook": {
+      "import": "./dist/drivers/oauth2/facebook.mjs",
+      "require": "./dist/drivers/oauth2/facebook.js",
+      "types": "./dist/drivers/oauth2/facebook.d.ts"
+    },
+    "./drivers/oauth2/google": {
+      "import": "./dist/drivers/oauth2/google.mjs",
+      "require": "./dist/drivers/oauth2/google.js",
+      "types": "./dist/drivers/oauth2/google.d.ts"
+    }
   },
   "typesVersions": {
     "*": {
@@ -29,6 +68,7 @@
   "license": "MIT",
   "devDependencies": {
     "@types/jest": "^27.0.2",
+    "@types/node": "^24.0.8",
     "@types/plist": "^3.0.2",
     "@typescript-eslint/eslint-plugin": "^4.0.1",
     "@typescript-eslint/parser": "^4.0.1",
@@ -53,6 +93,7 @@
     "ts-jest": "^27.0.5",
     "ts-node": "^10.4.0",
     "tsup": "^6.7.0",
+    "tsx": "^4.20.3",
     "typedoc": "^0.22.4",
     "typescript": "4.8.0-dev.20220514",
     "vitepress": "^0.22.4",
@@ -61,7 +102,7 @@
     "vue-router": "4"
   },
   "scripts": {
-    "build": "tsup",
+    "build": "tsup && tsx scripts/export.ts",
     "prepublishOnly": "bumpp package.json --tags --push && yarn build",
     "docs": "typedoc src",
     "test:coverage": "jest",
