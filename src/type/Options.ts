@@ -1,4 +1,8 @@
-import type { RouteLocationRaw, Router } from "vue-router"
+import type {
+  RouteLocationNormalized,
+  RouteLocationRaw,
+  Router,
+} from "vue-router"
 
 import Auth from "../Auth"
 
@@ -6,6 +10,10 @@ import CookieOptions from "./CookieOptions"
 import AuthDriver from "./drivers/AuthDriver"
 import HttpDriver from "./drivers/HttpDriver"
 import OAuth2Driver from "./drivers/OAuth2Driver"
+
+type Redirect =
+  | RouteLocationRaw
+  | ((to: RouteLocationNormalized) => RouteLocationRaw)
 
 type HttpData = Partial<Parameters<HttpDriver["request"]>[0]> & {
   redirect?: RouteLocationRaw
@@ -33,9 +41,9 @@ type Options = {
 
   // Redirects
 
-  authRedirect?: RouteLocationRaw
-  forbiddenRedirect?: RouteLocationRaw
-  notFoundRedirect?: RouteLocationRaw
+  authRedirect?: Redirect
+  forbiddenRedirect?: Redirect
+  notFoundRedirect?: Redirect
 
   // Http
 
