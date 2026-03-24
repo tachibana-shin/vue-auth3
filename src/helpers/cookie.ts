@@ -64,8 +64,7 @@ function get(auth: Auth, key: string): string | null {
       })
       .find(([keyTest]) => {
         return keyTest === key
-        // eslint-disable-next-line quotes
-      })?.[1] ?? '"null"'
+      })?.[1] ?? "null"
   )
 }
 
